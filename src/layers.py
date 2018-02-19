@@ -139,13 +139,17 @@ def dropout_forward(X, p=0.5, train=True, seed=42):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
-
+    
     if train == True:
-        mask = (np.random.rand(*X.shape) < p) / p
-        out = X * mask
+        mask = (np.random.rand(*X.shape) > p)
+        scale_factor = 1/(1-p)
+        mask = mask * scale_factor
 
+        out = X * mask
+        
     else:
         out = X
+        
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
