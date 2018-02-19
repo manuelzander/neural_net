@@ -140,6 +140,12 @@ def dropout_forward(X, p=0.5, train=True, seed=42):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
 
+    if train == True:
+        mask = (np.random.rand(*X.shape) < p) / p
+        out = X * mask
+
+    else:
+        out = X
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
@@ -171,6 +177,11 @@ def dropout_backward(dout, mask, p=0.5, train=True):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
 
+    if train == True:
+        dX = dout * mask
+
+    else:
+        dX = dout
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
