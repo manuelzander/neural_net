@@ -53,19 +53,16 @@ def softmax(logits, y):
 	num_train = logits.shape[0]
  
 	logits += - np.max(logits)
-#	p = np.exp(logits + math.log(0.5)) / np.sum(np.exp(logits + math.log(0.5)), axis = 0)
-	logits_exp = np.exp((logits) + math.log(0.5))
-	sum_of_exp = np.sum(logits_exp)
+	logits_exp = np.exp(logits) #+ math.log(0.5)))
+	sum_of_exp = np.sum(logits_exp, axis=1, keepdims=True)
+	p = logits_exp/sum_of_exp
 
-	loss = np.log(sum_of_exp)
-	correct_class_probabilities = logits[range(num_train), list(y)]
-	loss = loss - correct_class_probabilities
-#	loss = np.sum(-np.log(correct_class_probabilities)) / num_train
-	loss = np.sum(loss)/num_train
-
+	correct_class_probabilities = -np.log(p[range(num_train), y])
+	loss = np.sum(correct_class_probabilities)/num_train
+	
         #calculate gradient
 	gradient = logits_exp / sum_of_exp
-	gradient[range(num_train), list(y)] += -1.0
+	gradient[range(num_train), y] += -1.0
 	dlogits = gradient/num_train
 
         #HOW DO WE GET W? Don't need W - they just want us to do normalisation for numerical stability (did this)
