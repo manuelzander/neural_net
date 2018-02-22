@@ -27,7 +27,20 @@ def linear_forward(X, W, b):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
 
+    #reshaping X (N, d_1, ..., d_K matrix) to multiply it with W (d1, ..., d_K matrix)
+    
+    N = X.shape[0]
+    
+    #transform matrix so that it is possible to multiply X and W
+    D = np.prod(X.shape[1:])
+    X2 = np.reshape(X, (N,D))
 
+    #X2 = np.reshape(X.shape[0], -1)
+    
+    #calculate what is passed forward through neuron 
+    out = np.dot(X2, W) + b
+    
+    
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
@@ -57,8 +70,25 @@ def linear_backward(dout, X, W, b):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
+    
+    #reshape input so that it is possible to multiply it by X
+    #Shape: (N, D)
+    D = np.prod(X.shape[1:])
+    X2 = np.reshape(X, (X.shape[0],D))
+    
+    #multiply upstream derivative by the transpose of X and W respectively
+    #Shape: (N,M) x (D,M).T = (N,D) and then reshape into (N, d_1, ..., d_K)
+    dX = np.dot(dout, W.T).reshape(X.shape)
+    
+    #Shape:  (N,D).T x (N,M)= (D,M)
+    dW = np.dot(X2.T, dout)
 
+    #Shape: sum(N,M) = (M,) 
+    db = np.sum(dout, axis=0)
 
+    #dw = x.reshape(x.shape[0], w.shape[0]).T.dot(dout)
+    #db = np.sum(dout, axis=0)
+    #dx = dout.dot(w.T).reshape(x.shape)
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
@@ -81,8 +111,14 @@ def relu_forward(X):
     ###########################################################################
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
+
     out = X.copy()  # Must use copy in numpy to avoid pass by reference.
+
+    #setting all negative values for i in X[i] to zero
     out[out < 0] = 0
+
+    #out = np.maximum(0, X)
+    
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
@@ -106,6 +142,9 @@ def relu_backward(dout, X):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
 
+    dX = np.array(dout, copy=True)
+
+    dX[X <= 0] = 0
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
