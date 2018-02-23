@@ -69,8 +69,12 @@ class FullyConnectedNet(object):
         #######################################################################
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
-
-
+        
+        
+        
+        
+        
+        
         #######################################################################
         #                            END OF YOUR CODE                         #
         #######################################################################
@@ -117,7 +121,42 @@ class FullyConnectedNet(object):
         #######################################################################
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
+        
+        n_hidden_layer = self.num_layers - 1
+        scores = X
+        
+        for i in range(n_hidden_layer):
 
+            
+            #LINEAR LAYER
+            linear_cache['X%d' % (i + 1)] = scores
+            linear_cache['W%d' % (i + 1)] = self.params['W%d' % (i + 1)]
+            linear_cache['b%d' % (i + 1)] = self.params['b%d' % (i + 1)]
+            scores = linear_forward(scores,
+                                         self.params['W%d' % (i + 1)],
+                                         self.params['b%d' % (i + 1)])
+
+            #RELU LAYER
+            relu_cache['X%d' % (i + 1)] = scores
+            scores = relu_forward(scores)
+
+            #DROPOUT LAYER
+            if self.use_dropout:
+                dropout_cache['X%d' % (i + 1)] = scores
+                scores = dropout_forward(scores, self.dropout_params)
+
+        #increase i counter by one for last layer
+        i+= 1
+        
+        #LAST LINEAR LAYER
+        linear_cache['X%d' % (i + 1)] = scores
+        linear_cache['W%d' % (i + 1)] = self.params['W%d' % (i + 1)]
+        linear_cache['b%d' % (i + 1)] = self.params['b%d' % (i + 1)]
+        scores = linear_forward(scores,
+                                 self.params['W%d' % (i + 1)],
+                                 self.params['b%d' % (i + 1)])            
+        
+        
 
         #######################################################################
         #                            END OF YOUR CODE                         #
