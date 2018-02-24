@@ -21,6 +21,7 @@ def random_init(n_in, n_out, weight_scale=5e-2, dtype=np.float32):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
 
+    W = weight_scale*np.random.randn(n_in, n_out).astype(dtype)
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
@@ -69,12 +70,14 @@ class FullyConnectedNet(object):
         #######################################################################
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
-        
-        
-        
-        
-        
-        
+
+        W,b = random_init(input_dim, self.num_layers, weight_scale, dtype)
+
+        # For loop to assign W and b values using Xavier initialisation for the defined number of layers of a network (i)
+        for i in range(self.num_layers - 1):
+            self.params['W' + str(i+1)] = W/np.sqrt(hidden_dims[i])
+            self.params['b' + str(i+1)] = np.zeros(hidden_dims[i], dtype)
+
         #######################################################################
         #                            END OF YOUR CODE                         #
         #######################################################################
@@ -121,13 +124,13 @@ class FullyConnectedNet(object):
         #######################################################################
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
-        
+
         n_hidden_layer = self.num_layers - 1
         scores = X
-        
+
         for i in range(n_hidden_layer):
 
-            
+
             #LINEAR LAYER
             linear_cache['X%d' % (i + 1)] = scores
             linear_cache['W%d' % (i + 1)] = self.params['W%d' % (i + 1)]
@@ -142,21 +145,20 @@ class FullyConnectedNet(object):
 
             #DROPOUT LAYER
             if self.use_dropout:
-                dropout_cache['X%d' % (i + 1)] = scores
-                scores = dropout_forward(scores, self.dropout_params)
+                #dropout_cache['X%d' % (i + 1)] = scores
+                scores, mask = dropout_forward(scores, self.dropout_params)
+                dropout_cache['m%d' % (i + 1)] = mask
 
         #increase i counter by one for last layer
         i+= 1
-        
+
         #LAST LINEAR LAYER
         linear_cache['X%d' % (i + 1)] = scores
         linear_cache['W%d' % (i + 1)] = self.params['W%d' % (i + 1)]
         linear_cache['b%d' % (i + 1)] = self.params['b%d' % (i + 1)]
         scores = linear_forward(scores,
                                  self.params['W%d' % (i + 1)],
-                                 self.params['b%d' % (i + 1)])            
-        
-        
+                                 self.params['b%d' % (i + 1)])
 
         #######################################################################
         #                            END OF YOUR CODE                         #
@@ -199,15 +201,19 @@ class FullyConnectedNet(object):
 
             #Dropout backprop
             if self.dropout:
-                dout = dropout_backward(dout, dropout_cache['d%d' % i])
+                mask = dropout_cache['m%d' % i]
+                p = self.dropout_params["p"]
+                train = self.dropout_params["train"]
+                dout = dropout_backward(dout, mask, p, train)
 
             #Relu backprop
-            dout = relu_backward(dout, relu_cache['r%d' % i])
+            dout = relu_backward(dout, relu_cache['X%d' % i])
+
+            #Linear backprop
             X = linear_cache['X%d' % i]
             W = linear_cache['W%d' % i]
             b = linear_cache['b%d' % i]
 
-            #Linear backprop
             dout, grads['W%d' % i], grads['b%d' % i] = linear_backward(d_logits, X, W, b)
 
             #Include term for regularization
