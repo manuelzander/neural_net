@@ -140,6 +140,39 @@ class FullyConnectedNet(object):
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
 
+        data_loss, d_logits = softmax(scores, y)
+        reg_loss =  0
+        for i in range(self.num_layers):
+            reg_loss += 0.5 * self.reg * np.sum(self.params['W%d' % (i + 1)] ** 2)
+            # Note: i + 1 because we start with W1, then W2, etc.
+        loss = data_loss + reg_loss
+
+        #Backprop for last layer
+        X = linear_cache['X%d' % (num_layers + 1)]
+        W = linear_cache['W%d' % (num_layers + 1)]
+        b = linear_cache['b%d' % (num_layers + 1)]
+        dout, grads['W%d' % (num_layers + 1)], grads['b%d' % (num_layers + 1)] = linear_backward(d_logits, X, W, b)
+
+        #Include term for regularization
+        grads['W%d' % (num_layers + 1)] += self.reg * self.params['W%d' % (num_layers + 1)]
+
+        for i in range(self.num_layers-1, 0, -1):
+
+            #Dropout backprop
+            if self.dropout:
+                dout = dropout_backward(dout, dropout_cache['d%d' % i])
+
+            #Relu backprop
+            dout = relu_backward(dout, relu_cache['r%d' % i])
+            X = linear_cache['X%d' % i]
+            W = linear_cache['W%d' % i]
+            b = linear_cache['b%d' % i]
+
+            #Linear backprop
+            dout, grads['W%d' % i], grads['b%d' % i] = linear_backward(d_logits, X, W, b)
+
+            #Include term for regularization
+            grads['W%d' % i] += self.reg * self.params['W%d' % i]
 
         #######################################################################
         #                            END OF YOUR CODE                         #
