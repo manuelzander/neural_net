@@ -21,12 +21,8 @@ def random_init(n_in, n_out, weight_scale=5e-2, dtype=np.float32):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
 
-    W = np.random.normal(0, weight_scale, [n_out, n_in])
-    b = np.zeros(n_in)
-
-
-    #W = np.random.normal(0, weight_scale, [input_dim, hidden_dims[i]])
-    #b = np.zeros([hidden_dims[i]])
+    W = np.random.normal(0, weight_scale, [n_in, n_out])
+    b = np.zeros(n_out)
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
@@ -85,15 +81,22 @@ class FullyConnectedNet(object):
             self.params['b' + str(i+1)] = np.zeros(hidden_dims[i], dtype)
         '''
 
-        for i in range(self.num_layers - 1):
-            self.params['W' + str(i+1)], self.params['b' + str(i+1)] = random_init(hidden_dims[i], input_dim, weight_scale, dtype)
+
+        self.params['W' + str(1)], self.params['b' + str(1)] = random_init(input_dim, hidden_dims[0], weight_scale, dtype)
+        print("W")
+        print(self.params['W' + str(1)].shape)
+        print("b")
+        print(self.params['b' + str(1)].shape)
+
+        for i in range(1, self.num_layers - 1):
+            self.params['W' + str(i+1)], self.params['b' + str(i+1)] = random_init(hidden_dims[i-1], hidden_dims[i], weight_scale, dtype)
             print("W")
             print(self.params['W' + str(i+1)].shape)
             print("b")
             print(self.params['b' + str(i+1)].shape)
 
         #For the last layer
-        self.params['W' + str(self.num_layers)] = np.random.normal(0, weight_scale, [input_dim, num_classes])
+        self.params['W' + str(self.num_layers)] = np.random.normal(0, weight_scale, [hidden_dims[-1], num_classes])
         print("W")
         print(self.params['W' + str(self.num_layers)].shape)
 
@@ -183,6 +186,9 @@ class FullyConnectedNet(object):
 
         #increase i counter by one for last layer
         i+= 1
+
+        print(scores.shape)
+
 
         #LAST LINEAR LAYER
         linear_cache['X%d' % (i + 1)] = scores
