@@ -75,7 +75,7 @@ class FullyConnectedNet(object):
 
         # For loop to assign W and b values using Xavier initialisation for the defined number of layers of a network (i)
         for i in range(self.num_layers - 1):
-            self.params['W' + str(i+1)] = W/np.sqrt(hidden_dims[i])
+            self.params['W' + str(i+1)] = W
             self.params['b' + str(i+1)] = np.zeros(hidden_dims[i], dtype)
 
         #######################################################################
