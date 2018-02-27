@@ -8,7 +8,7 @@ import pickle as pickle
 
 import numpy as np
 
-import optim
+import src.utils.optim as optim
 
 """
 @CS231 (cs231n.stanford.edu/)
