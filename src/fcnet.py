@@ -21,7 +21,12 @@ def random_init(n_in, n_out, weight_scale=5e-2, dtype=np.float32):
     #                           BEGIN OF YOUR CODE                            #
     ###########################################################################
 
-    W = weight_scale*np.random.randn(n_in, n_out).astype(dtype)
+    W = np.random.normal(0, weight_scale, [n_out, n_in])
+    b = np.zeros(n_in)
+
+
+    #W = np.random.normal(0, weight_scale, [input_dim, hidden_dims[i]])
+    #b = np.zeros([hidden_dims[i]])
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
@@ -71,12 +76,31 @@ class FullyConnectedNet(object):
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
 
-        W,b = random_init(input_dim, self.num_layers, weight_scale, dtype)
+        #W,b = random_init(input_dim, self.num_layers, weight_scale, dtype)
 
         # For loop to assign W and b values using Xavier initialisation for the defined number of layers of a network (i)
+        '''
         for i in range(self.num_layers - 1):
             self.params['W' + str(i+1)] = W/np.sqrt(hidden_dims[i])
             self.params['b' + str(i+1)] = np.zeros(hidden_dims[i], dtype)
+        '''
+
+        for i in range(self.num_layers - 1):
+            self.params['W' + str(i+1)], self.params['b' + str(i+1)] = random_init(hidden_dims[i], input_dim, weight_scale, dtype)
+            print("W")
+            print(self.params['W' + str(i+1)].shape)
+            print("b")
+            print(self.params['b' + str(i+1)].shape)
+
+        #For the last layer
+        self.params['W' + str(self.num_layers)] = np.random.normal(0, weight_scale, [input_dim, num_classes])
+        print("W")
+        print(self.params['W' + str(self.num_layers)].shape)
+
+        self.params['b' + str(self.num_layers)] = np.zeros([num_classes], dtype)
+        print("b")
+        print(self.params['b' + str(self.num_layers)].shape)
+
 
         #######################################################################
         #                            END OF YOUR CODE                         #
@@ -127,9 +151,14 @@ class FullyConnectedNet(object):
 
         n_hidden_layer = self.num_layers - 1
         scores = X
+        print("Shape of X before loop")
+        print(scores.shape)
+
 
         for i in range(n_hidden_layer):
 
+            print('Shape of X before linear_forward %d' % (i +1))
+            print(scores.shape)
 
             #LINEAR LAYER
             linear_cache['X%d' % (i + 1)] = scores
@@ -138,6 +167,9 @@ class FullyConnectedNet(object):
             scores = linear_forward(scores,
                                          self.params['W%d' % (i + 1)],
                                          self.params['b%d' % (i + 1)])
+
+            print('Shape of X after linear_forward %d' % (i +1))
+            print(scores.shape)
 
             #RELU LAYER
             relu_cache['X%d' % (i + 1)] = scores
