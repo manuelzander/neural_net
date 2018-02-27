@@ -72,38 +72,30 @@ class FullyConnectedNet(object):
         #                           BEGIN OF YOUR CODE                        #
         #######################################################################
 
-        #W,b = random_init(input_dim, self.num_layers, weight_scale, dtype)
+        n_hidden_layer = self.num_layers - 1
 
-        # For loop to assign W and b values using Xavier initialisation for the defined number of layers of a network (i)
-        '''
-        for i in range(self.num_layers - 1):
-            self.params['W' + str(i+1)] = W
-            self.params['b' + str(i+1)] = np.zeros(hidden_dims[i], dtype)
-        '''
+        #For the first layer
+        self.params['W%d' % 1], self.params['b%d' % 1] = random_init(input_dim, hidden_dims[0], weight_scale, dtype)
+        #print("W")
+        #print(self.params['W%d' % 1].shape)
+        #print("b")
+        #print(self.params['b%d' % 1].shape)
 
-
-        self.params['W' + str(1)], self.params['b' + str(1)] = random_init(input_dim, hidden_dims[0], weight_scale, dtype)
-        print("W")
-        print(self.params['W' + str(1)].shape)
-        print("b")
-        print(self.params['b' + str(1)].shape)
-
-        for i in range(1, self.num_layers - 1):
-            self.params['W' + str(i+1)], self.params['b' + str(i+1)] = random_init(hidden_dims[i-1], hidden_dims[i], weight_scale, dtype)
-            print("W")
-            print(self.params['W' + str(i+1)].shape)
-            print("b")
-            print(self.params['b' + str(i+1)].shape)
+        #For the hidden layers
+        for i in range(1, n_hidden_layer):
+            #print(i)
+            self.params['W%d' % (i+1)], self.params['b%d' % (i+1)] = random_init(hidden_dims[i-1], hidden_dims[i], weight_scale, dtype)
+            #print("W")
+            #print(self.params['W%d' % (i+1)].shape)
+            #print("b")
+            #print(self.params['b%d' % (i+1)].shape)
 
         #For the last layer
-        self.params['W' + str(self.num_layers)] = np.random.normal(0, weight_scale, [hidden_dims[-1], num_classes])
-        print("W")
-        print(self.params['W' + str(self.num_layers)].shape)
-
-        self.params['b' + str(self.num_layers)] = np.zeros([num_classes], dtype)
-        print("b")
-        print(self.params['b' + str(self.num_layers)].shape)
-
+        self.params['W%d' % self.num_layers], self.params['b%d' % self.num_layers] = random_init(hidden_dims[-1], num_classes, weight_scale, dtype)
+        #print("W")
+        #print(self.params['W%d' % self.num_layers].shape)
+        #print("b")
+        #print(self.params['b%d' % self.num_layers].shape)
 
         #######################################################################
         #                            END OF YOUR CODE                         #
@@ -153,15 +145,16 @@ class FullyConnectedNet(object):
         #######################################################################
 
         n_hidden_layer = self.num_layers - 1
-        scores = X
-        print("Shape of X before loop")
-        print(scores.shape)
 
+        scores = X
+        #print("Shape of X before loop")
+        #print(scores.shape)
 
         for i in range(n_hidden_layer):
+            #print(i)
 
-            print('Shape of X before linear_forward %d' % (i +1))
-            print(scores.shape)
+            #print('Shape of X before linear_forward %d' % (i +1))
+            #print(scores.shape)
 
             #LINEAR LAYER
             linear_cache['X%d' % (i + 1)] = scores
@@ -171,12 +164,15 @@ class FullyConnectedNet(object):
                                          self.params['W%d' % (i + 1)],
                                          self.params['b%d' % (i + 1)])
 
-            print('Shape of X after linear_forward %d' % (i +1))
-            print(scores.shape)
+            #print('Shape of X after linear_forward %d' % (i +1))
+            #print(scores.shape)
 
             #RELU LAYER
             relu_cache['X%d' % (i + 1)] = scores
             scores = relu_forward(scores)
+
+            #print('Shape of X after relu_forward %d' % (i +1))
+            #print(scores.shape)
 
             #DROPOUT LAYER
             if self.use_dropout:
@@ -187,8 +183,9 @@ class FullyConnectedNet(object):
         #increase i counter by one for last layer
         i+= 1
 
-        print(scores.shape)
-
+        #print ("Last layer")
+        #print(i)
+        #print(scores.shape)
 
         #LAST LINEAR LAYER
         linear_cache['X%d' % (i + 1)] = scores
@@ -197,6 +194,8 @@ class FullyConnectedNet(object):
         scores = linear_forward(scores,
                                  self.params['W%d' % (i + 1)],
                                  self.params['b%d' % (i + 1)])
+
+        #print(scores.shape)
 
         #######################################################################
         #                            END OF YOUR CODE                         #
@@ -222,23 +221,23 @@ class FullyConnectedNet(object):
         data_loss, d_logits = softmax(scores, y)
         reg_loss =  0
         for i in range(self.num_layers):
-            reg_loss += 0.5 * self.reg * np.sum(self.params['W%d' % (i + 1)] ** 2)
-            # Note: i + 1 because we start with W1, then W2, etc.
+            reg_loss += 0.5 * self.reg * np.sum(self.params['W%d' % (i + 1)] ** 2) # Note: i + 1 because we start with W1, then W2, etc.
         loss = data_loss + reg_loss
 
         #Backprop for last layer
-        X = linear_cache['X%d' % (num_layers + 1)]
-        W = linear_cache['W%d' % (num_layers + 1)]
-        b = linear_cache['b%d' % (num_layers + 1)]
-        dout, grads['W%d' % (num_layers + 1)], grads['b%d' % (num_layers + 1)] = linear_backward(d_logits, X, W, b)
+        X = linear_cache['X%d' % self.num_layers]
+        W = linear_cache['W%d' % self.num_layers]
+        b = linear_cache['b%d' % self.num_layers]
+        dout, grads['W%d' % self.num_layers], grads['b%d' % (self.num_layers)] = linear_backward(d_logits, X, W, b)
 
         #Include term for regularization
-        grads['W%d' % (num_layers + 1)] += self.reg * self.params['W%d' % (num_layers + 1)]
+        grads['W%d' % self.num_layers] += self.reg * self.params['W%d' % self.num_layers]
 
-        for i in range(self.num_layers-1, 0, -1):
+        #Loop backwards through hidden layers
+        for i in range(n_hidden_layer, 0, -1):
 
             #Dropout backprop
-            if self.dropout:
+            if self.use_dropout:
                 mask = dropout_cache['m%d' % i]
                 p = self.dropout_params["p"]
                 train = self.dropout_params["train"]
@@ -251,8 +250,7 @@ class FullyConnectedNet(object):
             X = linear_cache['X%d' % i]
             W = linear_cache['W%d' % i]
             b = linear_cache['b%d' % i]
-
-            dout, grads['W%d' % i], grads['b%d' % i] = linear_backward(d_logits, X, W, b)
+            dout, grads['W%d' % i], grads['b%d' % i] = linear_backward(dout, X, W, b)
 
             #Include term for regularization
             grads['W%d' % i] += self.reg * self.params['W%d' % i]
