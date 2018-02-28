@@ -15,11 +15,11 @@ TODO: Overfit the network with 50 samples of CIFAR-10
 data = get_CIFAR10_data(num_training=50)
 
 # Create FC Net
-H1, H2, reg = 100, 100, 10
+H1, H2, reg = 100, 100, 0
 model = FullyConnectedNet([H1,H2], reg=reg)
 
 # Solver
-optim_config = {'learning_rate' : 6e-3}
+optim_config = {'learning_rate' : 6.5e-3} #default 1e-2
 args = {'num_epochs':20, 'optim_config':optim_config}
 solver = Solver(model, data, **args)
 
