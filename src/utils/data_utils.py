@@ -1,9 +1,11 @@
-from builtins import range
+#from builtins import range
 from six.moves import cPickle as pickle
 import numpy as np
 import os
 from scipy.misc import imread
 import platform
+
+import imageio
 
 def load_pickle(f):
     version = platform.python_version_tuple()
@@ -79,3 +81,42 @@ def get_CIFAR10_data(num_training=49000, num_validation=1000, num_test=1000,
       'X_val': X_val, 'y_val': y_val,
       'X_test': X_test, 'y_test': y_test,
     }
+
+
+file = open('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/labels_public.txt')
+
+first_line = file.readline()
+first_line = file.readline()
+pic_path = first_line.split(',')[0]
+path = os.path.join('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/', pic_path)
+
+pictures = imageio.imread(path)
+pictures = np.expand_dims(pictures, axis = 0)
+
+for line in file:
+    y = line[-2]
+    print (y)
+
+    pic_path = line.split(',')[0]
+    path = os.path.join('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/', pic_path)
+    img = imageio.imread(path)
+    img = np.expand_dims(img, axis = 0)
+
+    pictures = np.concatenate([img,pictures],axis = 0)
+    
+    print (pictures.shape)
+
+    
+#print(line[-2])
+#fpath = line.split(',')[0]
+
+
+#print(line.split(',')[0])
+
+#print (line)
+#path = 
+
+im = imageio.imread(path)
+
+
+print (im)
