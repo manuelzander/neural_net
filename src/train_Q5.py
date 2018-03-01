@@ -47,8 +47,8 @@ args = {
     'optim_config':optim_config,
     'lr_decay':0.90,
     'batch_size':100,
-    'num_epochs': 20,
-    'verbose': False
+    'num_epochs': 1#,
+    #'verbose': False
 }
 
 solver = Solver(model, data, **args)
@@ -58,21 +58,21 @@ y_train = data['y_train']
 X_val = data['X_val']
 y_val = data['y_val']
 
-print(X_train.shape)
-print(y_train.shape)
-print(X_val.shape)
-print(y_val.shape)
+#print(X_train.shape)
+#print(y_train.shape)
+#print(X_val.shape)
+#print(y_val.shape)
 
-print(model.params['W1'])
+#print(model.params['W1'])
 print("START TRAIN")
 solver.train()
 print("END TRAIN")
-print(model.params['W1'])
+#print(model.params['W1'])
 
 #######################################################################
 ### PLOT GRAPH
 #######################################################################
-
+'''
 plt.subplot(2, 1, 1)
 plt.title("Training loss")
 plt.plot(solver.loss_history, "o")
@@ -87,7 +87,7 @@ plt.xlabel('Epoch')
 plt.legend(loc='lower right')
 plt.gcf().set_size_inches(15, 12)
 plt.show()
-
+'''
 #######################################################################
 ### SAVE AND LOAD MODEL
 #######################################################################

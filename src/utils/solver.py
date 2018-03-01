@@ -257,6 +257,56 @@ class Solver(object):
 
         return acc
 
+    def calculate_measures(self, X, y, num_samples=None, batch_size=100):
+        """
+        Check accuracy of the model on the provided data.
+
+        Inputs:
+        - X: Array of data, of shape (N, d_1, ..., d_k)
+        - y: Array of labels, of shape (N,)
+        - num_samples: If not None, subsample the data and only test the model
+          on num_samples datapoints.
+        - batch_size: Split X and y into batches of this size to avoid using
+          too much memory.
+
+        Returns:
+        - acc: Scalar giving the fraction of instances that were correctly
+          classified by the model.
+        """
+
+        # Maybe subsample the data
+        N = X.shape[0]
+        if num_samples is not None and N > num_samples:
+            mask = np.random.choice(N, num_samples)
+            N = num_samples
+            X = X[mask]
+            y = y[mask]
+
+        # Compute predictions in batches
+        num_batches = N // batch_size
+        if N % batch_size != 0:
+            num_batches += 1
+        y_pred = []
+        for i in range(num_batches):
+            start = i * batch_size
+            end = (i + 1) * batch_size
+            scores = self.model.loss(X[start:end])
+            y_pred.append(np.argmax(scores, axis=1))
+        y_pred = np.hstack(y_pred)
+
+        y = y.tolist()
+        y_pred = y_pred.tolist()
+
+        # Construct the confusion matrix
+        confusion_matrix = construct_confusion_matrix(y,y_pred)
+        print("Confusion matrix:")
+        print(confusion_matrix)
+
+        # Calculate the prediction measures
+        measures = prediction_measures(confusion_matrix)
+
+        return measures
+
 
     def train(self):
         """
@@ -306,5 +356,57 @@ class Solver(object):
                     for k, v in self.model.params.items():
                         self.best_params[k] = v.copy()
 
+            if last_it:
+                classification_rate,recall,precision,f1  = self.calculate_measures(self.X_val, self.y_val,
+                    num_samples=self.num_val_samples)
+                print("Classification rate:")
+                print(classification_rate)
+                '''
+                print("Recall rate:")
+                print(recall)
+                print("Precision rate")
+                print(precision)
+                '''
+                print("F1 measure:")
+                print(f1)
+
         # At the end of training swap the best params into the model
         self.model.params = self.best_params
+
+
+def construct_confusion_matrix(actual_vector, prediction_vector):
+
+    max_value = max(max(actual_vector), max(prediction_vector))
+
+    print(max_value)
+
+    confusion_matrix = np.zeros((max_value,max_value))
+
+    for p, a in zip(prediction_vector, actual_vector):
+        confusion_matrix[a - 1][p - 1] += 1
+
+    return confusion_matrix
+
+def prediction_measures(confusion_matrix):
+
+    #Average recall and and precision per call
+    recall_vector = np.zeros(confusion_matrix.shape[0])
+    for i in range(confusion_matrix.shape[0]):
+        recall_vector[i] =  confusion_matrix[i,i] / sum(confusion_matrix[i,:])
+
+    precision_vector = np.zeros(confusion_matrix.shape[0])
+    for i in range(confusion_matrix.shape[0]):
+        precision_vector[i] =  confusion_matrix[i,i] / sum(confusion_matrix[:,i])
+
+    #F1 Measure
+    #assuming equality weighted recall and precision rates
+
+    alpha = 1
+
+    f1_measure = (1 + (alpha ** 2)) * ( (recall_vector * precision_vector) /
+                                 (((alpha ** 2) * precision_vector) + recall_vector) )
+
+    #Average classification rate
+    classification_rate = np.trace(confusion_matrix) / confusion_matrix.sum()
+
+    return classification_rate, recall_vector, precision_vector, f1_measure
