@@ -83,8 +83,7 @@ def get_CIFAR10_data(num_training=49000, num_validation=1000, num_test=1000,
       'X_test': X_test, 'y_test': y_test,
     }
 
-def get_FER2013_data(num_training=49000, num_validation=1000, num_test=1000,
-                     subtract_mean=True):
+def get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True):
 
     X_train, y_train, X_test, y_test = load_FER2013()
 
@@ -120,17 +119,20 @@ def get_FER2013_data(num_training=49000, num_validation=1000, num_test=1000,
 
 def load_FER2013():
 
+    with open('FER2013_data.pickle', 'rb') as handle:
+        s = pickle.load(handle)
+
+    '''
     f2 = open('FER2013_data.pickle', 'rb')
     s = pickle.load(f2)
     f2.close()
+    '''
 
     X_train = s['X_train']
     y_train = s['y_train']
     X_test = s['X_test']
-    y_test = s['y_test']     
+    y_test = s['y_test']
     return X_train, y_train, X_test, y_test
-
-
 
 def collect_FER2013_data(filepath):
 
@@ -138,7 +140,6 @@ def collect_FER2013_data(filepath):
 
     #first call to ignore headings
     first_line = file.readline()
-
 
     X_train = np.empty((0,48,48,3))
     X_test = np.empty((0,48,48,3))
@@ -148,54 +149,57 @@ def collect_FER2013_data(filepath):
     #i = 0
     for line in file:
         print (line)
+        
         #put training data into X_train
         if 'Train' in line:
             #Getting y y_train and appending to list
             y = line[-2]
             y_train.append(y)
-            
+
             #Getting X_train and putting into X_train numpy array
             pic_path = line.split(',')[0]
             path = os.path.join('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/', pic_path)
             img = imageio.imread(path)
             img = np.expand_dims(img, axis = 0)
             X_train = np.concatenate([img,X_train],axis = 0)
-            
+
             #print (X_train.shape)
             #print (len(y_train))
 
             #i += 1
-            
+            #if(i == 10):
+                #break;
+
+
         elif 'Test' in line:
             y = line[-2]
             y_test.append(y)
-            
+
             #Getting X_train and putting into X_train numpy array
             pic_path = line.split(',')[0]
             path = os.path.join('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/', pic_path)
             img = imageio.imread(path)
             img = np.expand_dims(img, axis = 0)
             X_test = np.concatenate([img,X_test],axis = 0)
-            
+
             #print ("WHY")
             #print (X_test.shape)
             #print (len(y_test))
 
-    y_train = np.array(y_train)
-    y_test = np.array(y_test)
-            
+    y_train = np.array(y_train).astype("int64")
+    y_test = np.array(y_test).astype("int64")
+
+
     data = {
         'X_train': X_train, 'y_train': y_train,
         'X_test': X_test, 'y_test': y_test,
     }
 
-    
-    
     f = open('FER2013_data.pickle', 'wb')
     pickle.dump(data, f)
     f.close()
-    
-    return 
+
+    return
 #############################################################################
 
 collect_FER2013_data('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/labels_public.txt')
@@ -214,5 +218,3 @@ collect_FER2013_data('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/labels_publi
 #print (x['y_val'].shape)
 #print (x['y_train'].shape)
 #print (x['y_test'].shape)
-
-

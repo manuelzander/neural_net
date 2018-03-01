@@ -1,7 +1,7 @@
 import numpy as np
 from src.fcnet import FullyConnectedNet
 from src.utils.solver import Solver
-from src.utils.data_utils import get_CIFAR10_data
+from src.utils.data_utils import get_FER2013_data
 import matplotlib.pyplot as plt
 import pickle
 
@@ -10,15 +10,16 @@ import pickle
 #######################################################################
 
 print("LOAD DATA")
-data = get_CIFAR10_data()
+#data = get_FER2013_data(25000, 3200, 4098)
+data = get_FER2013_data(20000, 1000, 1000)
 
 #######################################################################
 ### SET UP MODEL AND SOLVER
 #######################################################################
 
 H1, H2, reg = 100, 100, 0
-#two_layer_net = FullyConnectedNet([H1,H2], input_dim=48*48*3, num_classes=7, dropout=0, reg=reg)
-model = FullyConnectedNet([H1,H2], reg=reg)
+#model = FullyConnectedNet([H1,H2], input_dim=48*48*3, num_classes=7, dropout=0, reg=reg)
+model = FullyConnectedNet([H1,H2], input_dim=48*48*3, reg=reg)
 
 '''
 Example usage might look something like this:

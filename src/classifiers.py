@@ -51,15 +51,19 @@ def softmax(logits, y):
 
 	num_classes = logits.shape[1]
 	num_train = logits.shape[0]
- 
+
 	logits += - np.max(logits)
 	logits_exp = np.exp(logits) #+ math.log(0.5)))
 	sum_of_exp = np.sum(logits_exp, axis=1, keepdims=True)
 	p = logits_exp/sum_of_exp
 
+	print(num_train)
+	print(y)
+
+
 	correct_class_probabilities = -np.log(p[range(num_train), y])
 	loss = np.sum(correct_class_probabilities)/num_train
-	
+
         #calculate gradient
 	gradient = logits_exp / sum_of_exp
 	gradient[range(num_train), y] += -1.0
@@ -78,7 +82,7 @@ def softmax(logits, y):
 	Grad[y,np.arange(num_train)] += -1.0
 	dW = Grad.dot(X.T) / float(num_train) + reg*W
 	'''
-        
+
 	###########################################################################
 	#                            END OF YOUR CODE                             #
 	###########################################################################
