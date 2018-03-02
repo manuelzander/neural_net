@@ -17,10 +17,6 @@ data = get_FER2013_data(20000, 1000, 1000)
 ### SET UP MODEL AND SOLVER
 #######################################################################
 
-H1, H2, reg = 100, 100, 0
-#model = FullyConnectedNet([H1,H2], input_dim=48*48*3, num_classes=7, dropout=0, reg=reg)
-model = FullyConnectedNet([H1,H2], input_dim=48*48*3, reg=reg)
-
 '''
 Example usage might look something like this:
 
@@ -40,6 +36,10 @@ solver = Solver(model, data,
                 num_epochs=10, batch_size=100,
                 print_every=100)
 '''
+
+H1, H2, reg = 100, 100, 0
+#model = FullyConnectedNet([H1,H2], input_dim=48*48*3, num_classes=7, dropout=0, reg=reg)
+model = FullyConnectedNet([H1,H2], input_dim=48*48*3, reg=reg)
 
 # Solver
 optim_config = {'learning_rate' : 2e-3} #default 1e-2
