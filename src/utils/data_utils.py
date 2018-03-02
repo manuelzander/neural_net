@@ -105,10 +105,18 @@ def get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True)
         X_val -= mean_image
         X_test -= mean_image
 
+
     # Transpose so that channels come first
     X_train = X_train.transpose(0, 3, 1, 2).copy()
     X_val = X_val.transpose(0, 3, 1, 2).copy()
     X_test = X_test.transpose(0, 3, 1, 2).copy()
+
+
+    print("After transposing the data")
+    print(X_train.shape)
+    print(X_val.shape)
+    print(X_test.shape)
+    print(y_test.shape)
 
     # Package data into a dictionary
     return {
@@ -119,7 +127,7 @@ def get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True)
 
 def load_FER2013():
 
-    with open('/vol/bitbucket/osk17/FER2013_data.pickle', 'rb') as handle:
+    with open('/homes/osk17/Study/Term2/MachineLearning/cw2/ML_Assignment_2/FER2013_data.pickle', 'rb') as handle:
         s = pickle.load(handle)
 
     '''
@@ -128,6 +136,7 @@ def load_FER2013():
     f2.close()
     '''
 
+    print("TEEEEEEEEEEST")
     X_train = s['X_train']
     print(X_train.shape)
     y_train = s['y_train']

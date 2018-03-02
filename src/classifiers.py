@@ -55,6 +55,8 @@ def softmax(logits, y):
 	logits += - np.max(logits)
 	logits_exp = np.exp(logits) #+ math.log(0.5)))
 	sum_of_exp = np.sum(logits_exp, axis=1, keepdims=True)
+	#print(sum_of_exp)
+	#print(logits_exp)
 	p = logits_exp/sum_of_exp
 
 	correct_class_probabilities = -np.log(p[range(num_train), y])
