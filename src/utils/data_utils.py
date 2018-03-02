@@ -169,6 +169,7 @@ def collect_FER2013_data(filepath):
             img = imageio.imread(path)[:,:,0].reshape((48,48,1))
             img = np.expand_dims(img, axis = 0)
             X_train = np.concatenate([img,X_train],axis = 0)
+            #X_train[i] = imageio.imread(path)[:,:,0].reshape((48,48,1))
 
             #print (X_train.shape)
             #print (len(y_train))
