@@ -146,7 +146,7 @@ def collect_FER2013_data(filepath):
     y_train = []
     y_test = []
 
-    #i = 0
+    #    i = 0
     for line in file:
         print (line)
         
@@ -158,18 +158,18 @@ def collect_FER2013_data(filepath):
 
             #Getting X_train and putting into X_train numpy array
             pic_path = line.split(',')[0]
-            path = os.path.join('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/', pic_path)
+            path = os.path.join('/homes/osk17/Study/Term2/MachineLearning/cw2/ML_Assignment_2/datasets/FER2013', pic_path)
             img = imageio.imread(path)
             img = np.expand_dims(img, axis = 0)
             X_train = np.concatenate([img,X_train],axis = 0)
 
             #print (X_train.shape)
             #print (len(y_train))
-
-            #i += 1
-            #if(i == 10):
-                #break;
-
+            '''
+            i += 1
+            if(i == 10):
+                break;
+            '''
 
         elif 'Test' in line:
             y = line[-2]
@@ -177,7 +177,7 @@ def collect_FER2013_data(filepath):
 
             #Getting X_train and putting into X_train numpy array
             pic_path = line.split(',')[0]
-            path = os.path.join('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/', pic_path)
+            path = os.path.join('/homes/osk17/Study/Term2/MachineLearning/cw2/ML_Assignment_2/datasets/FER2013', pic_path)
             img = imageio.imread(path)
             img = np.expand_dims(img, axis = 0)
             X_test = np.concatenate([img,X_test],axis = 0)
@@ -202,16 +202,17 @@ def collect_FER2013_data(filepath):
     return
 #############################################################################
 
-collect_FER2013_data('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/labels_public.txt')
+collect_FER2013_data('/homes/osk17/Study/Term2/MachineLearning/cw2/ML_Assignment_2/datasets/FER2013/labels_public.txt')
 #a,b,c,d = load_FER2013()
 
 #x = get_FER2013_data(num_training=4, num_validation=2, num_test=0,
-                     #subtract_mean=True)
-
-#print (a.shape)
-#print (b.shape)
-#print (c.shape)
-#print (d.shape)
+#                     subtract_mean=True)
+'''
+print (a.dtype)
+print (b.dtype)
+print (c.dtype)
+print (d.dtype)
+'''
 #print (x['X_train'][0][0])
 #print (x['X_test'].shape)
 #print (x['X_val'].shape)
