@@ -1,7 +1,7 @@
 import numpy as np
 from src.fcnet import FullyConnectedNet
 from src.utils.solver import Solver
-from src.utils.data_utils import get_FER2013_data
+from src.utils.data_utils import get_CIFAR10_data
 import matplotlib.pyplot as plt
 import pickle
 
@@ -11,7 +11,7 @@ import pickle
 
 print("LOAD DATA")
 #data = get_FER2013_data(25000, 3200, 4098)
-data = get_FER2013_data(25000, 1000, 1000)
+data = get_CIFAR10_data(10000, 1000, 1000)
 
 #######################################################################
 ### SET UP MODEL AND SOLVER
@@ -19,7 +19,7 @@ data = get_FER2013_data(25000, 1000, 1000)
 
 H1, H2, reg = 100, 100, 0
 #model = FullyConnectedNet([H1,H2], input_dim=48*48*3, num_classes=7, dropout=0, reg=reg)
-model = FullyConnectedNet([H1,H2], input_dim=48*48*3, reg=reg, dtype=np.float64)
+model = FullyConnectedNet([H1,H2], input_dim=48*48*1, reg=reg, dtype=np.float64)
 
 '''
 Example usage might look something like this:
@@ -52,6 +52,7 @@ args = {
     #'verbose': False
 }
 
+data['X_train'] = data['X_train'][:,:,:,0].reshape((-1,48,48,1))
 solver = Solver(model, data, **args)
 
 X_train = data['X_train']

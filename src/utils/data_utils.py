@@ -135,7 +135,7 @@ def load_FER2013():
 
     X_test = s['X_test']
     print(X_test.shape)
-        
+
     y_test = s['y_test']
     print(y_test.shape)
 
@@ -148,15 +148,15 @@ def collect_FER2013_data(filepath):
     #first call to ignore headings
     first_line = file.readline()
 
-    X_train = np.empty((0,48,48,3))
-    X_test = np.empty((0,48,48,3))
+    X_train = np.empty((0,48,48,1))
+    X_test = np.empty((0,48,48,1))
     y_train = []
     y_test = []
 
     #    i = 0
     for line in file:
         print (line)
-        
+
         #put training data into X_train
         if 'Train' in line:
             #Getting y y_train and appending to list
@@ -166,7 +166,7 @@ def collect_FER2013_data(filepath):
             #Getting X_train and putting into X_train numpy array
             pic_path = line.split(',')[0]
             path = os.path.join('/homes/osk17/Study/Term2/MachineLearning/cw2/ML_Assignment_2/datasets/FER2013', pic_path)
-            img = imageio.imread(path)
+            img = imageio.imread(path)[:,:,0].reshape((48,48,1))
             img = np.expand_dims(img, axis = 0)
             X_train = np.concatenate([img,X_train],axis = 0)
 
