@@ -228,7 +228,7 @@ def collect_FER2013_data(filepath):
     return
 #############################################################################
 
-collect_FER2013_data('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/labels_public.txt')
+#collect_FER2013_data('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/labels_public.txt')
 a,b,c,d = load_FER2013()
 
 #x = get_FER2013_data(num_training=4, num_validation=2, num_test=0,
