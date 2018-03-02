@@ -19,7 +19,7 @@ data = get_FER2013_data(25000, 1000, 1000)
 
 H1, H2, reg = 100, 100, 0
 #model = FullyConnectedNet([H1,H2], input_dim=48*48*3, num_classes=7, dropout=0, reg=reg)
-model = FullyConnectedNet([H1,H2], input_dim=48*48*3, reg=reg)
+model = FullyConnectedNet([H1,H2], input_dim=48*48*3, reg=reg, dtype=np.float64)
 
 '''
 Example usage might look something like this:

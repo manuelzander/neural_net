@@ -145,7 +145,6 @@ def relu_backward(dout, X):
     dX = np.array(dout, copy=True)
 
     dX[X <= 0] = 0
-    print("X is: ", X)
 
     ###########################################################################
     #                            END OF YOUR CODE                             #
