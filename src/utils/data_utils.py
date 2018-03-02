@@ -94,7 +94,7 @@ def get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True)
     mask = list(range(num_training))
     X_train = X_train[mask]
     y_train = y_train[mask]
-    mask = list(range(num_test))
+    mask = list(range(num_test)) # Our test set is not seperate from training?
     X_test = X_test[mask]
     y_test = y_test[mask]
 
@@ -119,7 +119,7 @@ def get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True)
 
 def load_FER2013():
 
-    with open('FER2013_data.pickle', 'rb') as handle:
+    with open('/vol/bitbucket/osk17/FER2013_data.pickle', 'rb') as handle:
         s = pickle.load(handle)
 
     '''
@@ -129,9 +129,16 @@ def load_FER2013():
     '''
 
     X_train = s['X_train']
+    print(X_train.shape)
     y_train = s['y_train']
+    print(y_train.shape)
+
     X_test = s['X_test']
+    print(X_test.shape)
+        
     y_test = s['y_test']
+    print(y_test.shape)
+
     return X_train, y_train, X_test, y_test
 
 def collect_FER2013_data(filepath):
@@ -195,14 +202,14 @@ def collect_FER2013_data(filepath):
         'X_test': X_test, 'y_test': y_test,
     }
 
-    f = open('FER2013_data.pickle', 'wb')
+    f = open('/vol/bitbucket/osk17/FER2013_data.pickle', 'wb') #/vol/bitbucket/osk17
     pickle.dump(data, f)
     f.close()
 
     return
 #############################################################################
 
-collect_FER2013_data('/homes/osk17/Study/Term2/MachineLearning/cw2/ML_Assignment_2/datasets/FER2013/labels_public.txt')
+#collect_FER2013_data('/homes/osk17/Study/Term2/MachineLearning/cw2/ML_Assignment_2/datasets/FER2013/labels_public.txt')
 #a,b,c,d = load_FER2013()
 
 #x = get_FER2013_data(num_training=4, num_validation=2, num_test=0,

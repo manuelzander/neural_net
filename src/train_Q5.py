@@ -11,7 +11,7 @@ import pickle
 
 print("LOAD DATA")
 #data = get_FER2013_data(25000, 3200, 4098)
-data = get_FER2013_data(20000, 1000, 1000)
+data = get_FER2013_data(25000, 1000, 1000)
 
 #######################################################################
 ### SET UP MODEL AND SOLVER
@@ -42,13 +42,13 @@ solver = Solver(model, data,
 '''
 
 # Solver
-optim_config = {'learning_rate' : 2e-3} #default 1e-2
+optim_config = {'learning_rate' : 0.05} #default 1e-2
 args = {
     'update_rule':"sgd_momentum",
     'optim_config':optim_config,
-    'lr_decay':0.90,
+    'lr_decay':1,
     'batch_size':100,
-    'num_epochs': 1#,
+    'num_epochs': 20#,
     #'verbose': False
 }
 
