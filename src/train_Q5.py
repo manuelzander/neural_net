@@ -1,7 +1,7 @@
 import numpy as np
 from src.fcnet import FullyConnectedNet
 from src.utils.solver import Solver
-from src.utils.data_utils import get_CIFAR10_data
+from src.utils.data_utils import get_FER2013_data
 import matplotlib.pyplot as plt
 import pickle
 
@@ -11,13 +11,25 @@ import pickle
 
 print("LOAD DATA")
 #data = get_FER2013_data(25000, 3200, 4098)
-data = get_CIFAR10_data(10000, 1000, 1000)
+data = get_FER2013_data(25709, 3000, 0)
+
+print("Before training the model")
+
+X_train = data['X_train']
+y_train = data['y_train']
+X_val = data['X_val']
+y_val = data['y_val']
+
+print(X_train[0][0])
+#print(y_train)
+#print(X_val)
+#print(y_val)
 
 #######################################################################
 ### SET UP MODEL AND SOLVER
 #######################################################################
 
-H1, H2, reg = 100, 100, 0
+H1, H2, reg = 80, 80, 0
 #model = FullyConnectedNet([H1,H2], input_dim=48*48*3, num_classes=7, dropout=0, reg=reg)
 model = FullyConnectedNet([H1,H2], input_dim=48*48*1, reg=reg, dtype=np.float64)
 
@@ -46,28 +58,18 @@ H1, H2, reg = 100, 100, 0
 model = FullyConnectedNet([H1,H2], input_dim=48*48*3, reg=reg)
 
 # Solver
-optim_config = {'learning_rate' : 0.05} #default 1e-2
+optim_config = {'learning_rate' : 1e-4} #default 1e-2
 args = {
     'update_rule':"sgd_momentum",
     'optim_config':optim_config,
-    'lr_decay':1,
+    'lr_decay':0.99,
     'batch_size':100,
-    'num_epochs': 20#,
+    'num_epochs': 30#,
     #'verbose': False
 }
 
-data['X_train'] = data['X_train'][:,:,:,0].reshape((-1,48,48,1))
+#data['X_train'] = data['X_train'][:,:,:,0].reshape((-1,48,48,1))
 solver = Solver(model, data, **args)
-
-X_train = data['X_train']
-y_train = data['y_train']
-X_val = data['X_val']
-y_val = data['y_val']
-
-#print(X_train.shape)
-#print(y_train.shape)
-#print(X_val.shape)
-#print(y_val.shape)
 
 #print(model.params['W1'])
 print("START TRAIN")
@@ -78,7 +80,7 @@ print("END TRAIN")
 #######################################################################
 ### PLOT GRAPH
 #######################################################################
-'''
+
 plt.subplot(2, 1, 1)
 plt.title("Training loss")
 plt.plot(solver.loss_history, "o")
@@ -93,7 +95,7 @@ plt.xlabel('Epoch')
 plt.legend(loc='lower right')
 plt.gcf().set_size_inches(15, 12)
 plt.show()
-'''
+
 #######################################################################
 ### SAVE AND LOAD MODEL
 #######################################################################

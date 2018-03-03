@@ -351,7 +351,6 @@ class Solver(object):
                 print(recall)
                 print("Precision rate")
                 print(precision)
-                '''
                 print("F1 measure:")
                 print(f1)
 
@@ -366,7 +365,7 @@ def construct_confusion_matrix(actual_vector, prediction_vector):
     confusion_matrix = np.zeros((max_value+1,max_value+1)) # (7,7)
 
     for p, a in zip(prediction_vector, actual_vector):
-        confusion_matrix[a - 1][p - 1] += 1
+        confusion_matrix[a][p] += 1
 
     return confusion_matrix
 
@@ -385,8 +384,8 @@ def prediction_measures(confusion_matrix):
             precision_vector[i] =  confusion_matrix[i,i] / sum(confusion_matrix[:,i])
         else:
             print ("Problem: ", confusion_matrix[:,i])
-           
-    
+
+
 
     #F1 Measure
     #assuming equality weighted recall and precision rates
