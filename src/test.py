@@ -1,4 +1,4 @@
-df test_fer_model(img_folder, model="/path/to/model"):
+'''df test_fer_model(img_folder, model="/path/to/model"):
     """
     Given a folder with images, load the images and your best model to predict
     the facial expression of each image.
@@ -11,9 +11,9 @@ df test_fer_model(img_folder, model="/path/to/model"):
     preds = None
 
     ### Start your code here
-  
-    #convert img_folder into preds numpy vector  
-    
+
+    #convert img_folder into preds numpy vector
+
     n_pictures = 0;
     for image in glob.glob(img_folder):
 	n_pictures += 1
@@ -25,10 +25,10 @@ df test_fer_model(img_folder, model="/path/to/model"):
 	images[i] = imageio.imread(image)[:,:,0].reshape((48,48,1))
 	i += 1
 
-    
 
-	
-	
+
+
+
 
 #  def check_accuracy(self, X, y, num_samples=None, batch_size=100):
         """
@@ -69,7 +69,8 @@ df test_fer_model(img_folder, model="/path/to/model"):
         acc = np.mean(y_pred == y)
 
         return acc
-	
+
 
     ### End of code
     return preds
+'''

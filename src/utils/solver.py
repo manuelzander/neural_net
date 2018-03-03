@@ -353,7 +353,7 @@ class Solver(object):
                 print(precision)
                 print("F1 measure:")
                 print(f1)
-
+                '''
         # At the end of training swap the best params into the model
         self.model.params = self.best_params
 

@@ -4,7 +4,6 @@ import numpy as np
 import os
 from scipy.misc import imread
 import platform
-
 import imageio
 import pickle
 
@@ -105,18 +104,10 @@ def get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True)
         X_val -= mean_image
         X_test -= mean_image
 
-
     # Transpose so that channels come first
     X_train = X_train.transpose(0, 3, 1, 2).copy()
     X_val = X_val.transpose(0, 3, 1, 2).copy()
     X_test = X_test.transpose(0, 3, 1, 2).copy()
-
-
-    print("After transposing the data")
-    print(X_train.shape)
-    print(X_val.shape)
-    print(X_test.shape)
-    print(y_test.shape)
 
     # Package data into a dictionary
     return {
@@ -127,7 +118,7 @@ def get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True)
 
 def load_FER2013():
 
-    with open('/homes/osk17/Study/Term2/MachineLearning/cw2/ML_Assignment_2/FER2013_data.pickle', 'rb') as handle:
+    with open('/vol/bitbucket/osk17/FER2013_data.pickle', 'rb') as handle:
         s = pickle.load(handle)
 
     '''
@@ -136,17 +127,10 @@ def load_FER2013():
     f2.close()
     '''
 
-    print("TEEEEEEEEEEST")
     X_train = s['X_train']
-    print(X_train.shape)
     y_train = s['y_train']
-    print(y_train.shape)
-
     X_test = s['X_test']
-    print(X_test.shape)
-
     y_test = s['y_test']
-    print(y_test.shape)
 
     return X_train, y_train, X_test, y_test
 
@@ -238,15 +222,15 @@ def collect_FER2013_data(filepath):
 #############################################################################
 
 #collect_FER2013_data('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/labels_public.txt')
-a,b,c,d = load_FER2013()
+#a,b,c,d = load_FER2013()
 
 #x = get_FER2013_data(num_training=4, num_validation=2, num_test=0,
 #                     subtract_mean=True)
 
-print (a.dtype)
-print (b.dtype)
-print (c.dtype)
-print (d.dtype)
+#print (a.dtype)
+#print (b.dtype)
+#print (c.dtype)
+#print (d.dtype)
 
 #print (x['X_train'][0][0])
 #print (x['X_test'].shape)
