@@ -53,6 +53,10 @@ solver = Solver(model, data,
                 print_every=100)
 '''
 
+H1, H2, reg = 100, 100, 0
+#model = FullyConnectedNet([H1,H2], input_dim=48*48*3, num_classes=7, dropout=0, reg=reg)
+model = FullyConnectedNet([H1,H2], input_dim=48*48*3, reg=reg)
+
 # Solver
 optim_config = {'learning_rate' : 1e-4} #default 1e-2
 args = {

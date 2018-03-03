@@ -258,21 +258,6 @@ class Solver(object):
         return acc
 
     def calculate_measures(self, X, y, num_samples=None, batch_size=100):
-        """
-        Check accuracy of the model on the provided data.
-
-        Inputs:
-        - X: Array of data, of shape (N, d_1, ..., d_k)
-        - y: Array of labels, of shape (N,)
-        - num_samples: If not None, subsample the data and only test the model
-          on num_samples datapoints.
-        - batch_size: Split X and y into batches of this size to avoid using
-          too much memory.
-
-        Returns:
-        - acc: Scalar giving the fraction of instances that were correctly
-          classified by the model.
-        """
 
         # Maybe subsample the data
         N = X.shape[0]
@@ -357,10 +342,11 @@ class Solver(object):
                         self.best_params[k] = v.copy()
 
             if last_it:
-                classification_rate,recall,precision,f1  = self.calculate_measures(self.X_val, self.y_val,
+                classification, recall, precision, f1  = self.calculate_measures(self.X_val, self.y_val,
                     num_samples=self.num_val_samples)
                 print("Classification rate:")
-                print(classification_rate)
+                print(classification)
+                '''
                 print("Recall rate:")
                 print(recall)
                 print("Precision rate")
