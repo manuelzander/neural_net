@@ -94,7 +94,7 @@ def get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True)
     mask = list(range(num_training))
     X_train = X_train[mask]
     y_train = y_train[mask]
-    mask = list(range(num_test))
+    mask = list(range(num_test)) # Our test set is not seperate from training?
     X_test = X_test[mask]
     y_test = y_test[mask]
 
@@ -119,7 +119,7 @@ def get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True)
 
 def load_FER2013():
 
-    with open('FER2013_data.pickle', 'rb') as handle:
+    with open('/homes/mmz216/ML_Assignment_2/src/utils/FER2013_data.pickle', 'rb') as handle:
         s = pickle.load(handle)
 
     '''
@@ -129,58 +129,84 @@ def load_FER2013():
     '''
 
     X_train = s['X_train']
+    print(X_train.shape)
     y_train = s['y_train']
+    print(y_train.shape)
+
     X_test = s['X_test']
+    print(X_test.shape)
+
     y_test = s['y_test']
+    print(y_test.shape)
+
     return X_train, y_train, X_test, y_test
 
 def collect_FER2013_data(filepath):
 
     file = open(filepath)
-
     #first call to ignore headings
     first_line = file.readline()
+    train_count  = 0
+    test_count = 0
 
-    X_train = np.empty((0,48,48,3))
-    X_test = np.empty((0,48,48,3))
+    for line in file:
+        if 'Train' in line:
+            train_count += 1
+
+        elif 'Test' in line:
+            test_count += 1
+    file.close()
+
+    file = open(filepath)
+
+    first_line = file.readline()
+
+    X_train = np.empty((train_count,48,48,1))
+    X_test = np.empty((test_count,48,48,1))
     y_train = []
     y_test = []
 
-    #i = 0
+    train_count = 0
+    test_count = 0
+
+    i = 0
     for line in file:
         print (line)
-        
+
         #put training data into X_train
         if 'Train' in line:
             #Getting y y_train and appending to list
             y = line[-2]
             y_train.append(y)
+            print (y)
 
             #Getting X_train and putting into X_train numpy array
             pic_path = line.split(',')[0]
-            path = os.path.join('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/', pic_path)
-            img = imageio.imread(path)
-            img = np.expand_dims(img, axis = 0)
-            X_train = np.concatenate([img,X_train],axis = 0)
-
-            #print (X_train.shape)
-            #print (len(y_train))
+            path = os.path.join('/vol/bitbucket/395ML_NN_Data/datasets/FER2013', pic_path)
+            X_train[train_count] = imageio.imread(path)[:,:,0].reshape((48,48,1))
+            train_count += 1
 
             #i += 1
             #if(i == 10):
-                #break;
+            #    break;
 
 
         elif 'Test' in line:
+
             y = line[-2]
+
+            if y == ',':
+                y = line[-1]
+
             y_test.append(y)
 
+            print (y)
             #Getting X_train and putting into X_train numpy array
             pic_path = line.split(',')[0]
-            path = os.path.join('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/', pic_path)
-            img = imageio.imread(path)
-            img = np.expand_dims(img, axis = 0)
-            X_test = np.concatenate([img,X_test],axis = 0)
+
+            path = os.path.join('/vol/bitbucket/395ML_NN_Data/datasets/FER2013', pic_path)
+            X_test[test_count] = imageio.imread(path)[:,:,0].reshape((48,48,1))
+            test_count += 1
 
             #print ("WHY")
             #print (X_test.shape)
@@ -192,26 +218,27 @@ def collect_FER2013_data(filepath):
 
     data = {
         'X_train': X_train, 'y_train': y_train,
-        'X_test': X_test, 'y_test': y_test,
+        'X_test': X_test, 'y_test': y_test
     }
 
-    f = open('FER2013_data.pickle', 'wb')
+    f = open('/homes/mmz216/ML_Assignment_2/src/utils/FER2013_data.pickle', 'wb') #/vol/bitbucket/osk17
     pickle.dump(data, f)
     f.close()
 
     return
 #############################################################################
 
-collect_FER2013_data('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/labels_public.txt')
-#a,b,c,d = load_FER2013()
+#collect_FER2013_data('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/labels_public.txt')
+a,b,c,d = load_FER2013()
 
 #x = get_FER2013_data(num_training=4, num_validation=2, num_test=0,
-                     #subtract_mean=True)
+#                     subtract_mean=True)
 
-#print (a.shape)
-#print (b.shape)
-#print (c.shape)
-#print (d.shape)
+print (a.dtype)
+print (b.dtype)
+print (c.dtype)
+print (d.dtype)
+
 #print (x['X_train'][0][0])
 #print (x['X_test'].shape)
 #print (x['X_val'].shape)

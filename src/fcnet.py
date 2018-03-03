@@ -22,7 +22,7 @@ def random_init(n_in, n_out, weight_scale=5e-2, dtype=np.float32):
     ###########################################################################
 
     W = np.random.normal(0, weight_scale, [n_in, n_out]).astype(dtype)
-    b = np.zeros(n_out)
+    b = np.zeros(n_out, dtype)
 
     ###########################################################################
     #                            END OF YOUR CODE                             #

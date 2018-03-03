@@ -363,9 +363,7 @@ def construct_confusion_matrix(actual_vector, prediction_vector):
 
     max_value = max(max(actual_vector), max(prediction_vector))
 
-    print(max_value)
-
-    confusion_matrix = np.zeros((max_value,max_value))
+    confusion_matrix = np.zeros((max_value+1,max_value+1)) # (7,7)
 
     for p, a in zip(prediction_vector, actual_vector):
         confusion_matrix[a - 1][p - 1] += 1
@@ -381,7 +379,14 @@ def prediction_measures(confusion_matrix):
 
     precision_vector = np.zeros(confusion_matrix.shape[0])
     for i in range(confusion_matrix.shape[0]):
-        precision_vector[i] =  confusion_matrix[i,i] / sum(confusion_matrix[:,i])
+        s = sum(confusion_matrix[:,i])
+
+        if s != 0:
+            precision_vector[i] =  confusion_matrix[i,i] / sum(confusion_matrix[:,i])
+        else:
+            print ("Problem: ", confusion_matrix[:,i])
+           
+    
 
     #F1 Measure
     #assuming equality weighted recall and precision rates
