@@ -385,13 +385,9 @@ def prediction_measures(confusion_matrix):
         else:
             print ("Problem: ", confusion_matrix[:,i])
 
-
-
     #F1 Measure
-    #assuming equality weighted recall and precision rates
 
     alpha = 1
-
     f1_measure = (1 + (alpha ** 2)) * ( (recall_vector * precision_vector) /
                                  (((alpha ** 2) * precision_vector) + recall_vector) )
 
