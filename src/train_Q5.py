@@ -35,6 +35,7 @@ assert y_val.shape == (num_validation,)
 classification_rate_cache = dict()
 max_classification_rate = 0.0;
 best_method = None;
+best_model = None;
 
 learning_rates = [1e-3, 1e-4, 1e-5, 1e-6]
 
@@ -80,15 +81,23 @@ for lr in learning_rates:
 
             solver_one_layer.train()
             classification_rate_cache['ONE_L%dNEUR%fLR_%fLRD' % (number_neurons, lr, lr_decay)] = solver_one_layer.best_val_acc
+            if(solver_one_layer.best_val_acc > max_classification_rate):
+                best_model = solver_one_layer.model
 
             solver_two_layers.train()
             classification_rate_cache['TWO_L%dNEUR%fLR_%fLRD' % (number_neurons, lr, lr_decay)] = solver_two_layers.best_val_acc
+            if(solver_two_layers.best_val_acc > max_classification_rate):
+                best_model = solver_two_layers.model
 
             solver_one_layer_withdropout.train()
             classification_rate_cache['ONE_L%dNEUR%fLR_%fLRD_DROP' % (number_neurons, lr, lr_decay)] = solver_one_layer_withdropout.best_val_acc
+            if(solver_one_layer_withdropout.best_val_acc > max_classification_rate):
+                best_model = solver_one_layer_withdropout.model
 
             solver_two_layers_withdropout.train()
             classification_rate_cache['TWO_L%dNEUR%fLR_%fLRD_DROP' % (number_neurons, lr, lr_decay)] = solver_two_layers_withdropout.best_val_acc
+            if(solver_two_layers_withdropout.best_val_acc > max_classification_rate):
+                best_model = solver_two_layers_withdropout.model
 
 #print(classification_rate_cache)
 print("{:<60} {:<60}".format('Method','Classification Rate'))
