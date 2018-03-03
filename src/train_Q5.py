@@ -79,16 +79,16 @@ for lr in learning_rates:
             solver_two_layers_withdropout  = Solver(model_two_layers_withdropout, data, **args)
 
             solver_one_layer.train()
-            classification_rate_cache['ONE_LAYER_%d_NEURONS_%f_LR%f_LRD' % (number_neurons, lr, lr_decay)] = solver_one_layer.best_val_acc
+            classification_rate_cache['ONE_LAYER_%dNEURONS_%fLR_%fLRD' % (number_neurons, lr, lr_decay)] = solver_one_layer.best_val_acc
 
             solver_two_layers.train()
-            classification_rate_cache['TWO_LAYER_%d_NEURONS_%f_LR%f_LRD' % (number_neurons, lr, lr_decay)] = solver_two_layers.best_val_acc
+            classification_rate_cache['TWO_LAYER_%dNEURONS_%fLR_%fLRD' % (number_neurons, lr, lr_decay)] = solver_two_layers.best_val_acc
 
             solver_one_layer_withdropout.train()
-            classification_rate_cache['ONE_LAYER_%d_NEURONS_%f_LR%f_LR_DROPOUT' % (number_neurons, lr, lr_decay)] = solver_one_layer_withdropout.best_val_acc
+            classification_rate_cache['ONE_LAYER_%dNEURONS_%fLR_%fLR_DROPOUT' % (number_neurons, lr, lr_decay)] = solver_one_layer_withdropout.best_val_acc
 
             solver_two_layers_withdropout.train()
-            classification_rate_cache['TWO_LAYER_%d_NEURONS_%f_LR%f_LR_DROPOUT' % (number_neurons, lr, lr_decay)] = solver_two_layers_withdropout.best_val_acc
+            classification_rate_cache['TWO_LAYER_%dNEURONS_%fLR_%fLR_DROPOUT' % (number_neurons, lr, lr_decay)] = solver_two_layers_withdropout.best_val_acc
 
 #print(classification_rate_cache)
 print("{:<60} {:<60}".format('Method','Classification Rate'))
