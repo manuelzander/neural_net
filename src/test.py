@@ -1,4 +1,9 @@
-df test_fer_model(img_folder, model="/path/to/model"):
+import glob
+import os
+import numpy as np
+import imageio
+
+def test_fer_model(img_folder, model="/path/to/model"):
     """
     Given a folder with images, load the images and your best model to predict
     the facial expression of each image.
@@ -13,9 +18,15 @@ df test_fer_model(img_folder, model="/path/to/model"):
     ### Start your code here
   
     #convert img_folder into preds numpy vector  
+    i = 0
+    for filename in os.listdir(img_folder):
+        print (i)
+        i += 1
+
     
     n_pictures = 0;
-    for image in glob.glob(img_folder):
+    for image in glob.iglob(img_folder):
+        print ("TEST")
 	n_pictures += 1
 
     images = np.zeros((n_pictures, 48, 48, 1))
@@ -23,14 +34,12 @@ df test_fer_model(img_folder, model="/path/to/model"):
     i = 0
     for image in glob.glob(img_folder):
 	images[i] = imageio.imread(image)[:,:,0].reshape((48,48,1))
-	i += 1
+        i += 1
 
-    
+test_fer_model("datasets/FER2013/Test")
 
-	
-	
-
-#  def check_accuracy(self, X, y, num_samples=None, batch_size=100):
+'''
+def check_accuracy(self, X, y, num_samples=None, batch_size=100):
         """
         Check accuracy of the model on the provided data.
 
@@ -73,3 +82,4 @@ df test_fer_model(img_folder, model="/path/to/model"):
 
     ### End of code
     return preds
+'''
