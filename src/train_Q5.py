@@ -38,19 +38,22 @@ best_method = None;
 best_model = None;
 best_solver = None;
 
-learning_rates = [1e-3, 1e-4] #1e-5, 1e-6]
+learning_rates = [1e-3, 1e-4, 1e-5]#, 1e-6]
 
 #Loop through learning rates specified above
 for lr in learning_rates:
+    print('*************************************************************')
     print('LEARNING RATE: %f' % lr)
 
     #Loop through learning rate decays 0.99 down to 0.90 (?)
-    for lrd in range(99, 95, -1):
+    for lrd in range(99, 94, -1):
         lrd = lrd/100
+        print('********************************')
         print('LEARNING RATE DECAY: %f' % lrd)
 
         #Loop through no of neurons from 50 to 150 with 25er steps
         for number_neurons in range(50, 175, 25):
+            print('****************')
             print('NO OF NEURONS: %d' % number_neurons)
 
             no_neurons_layer1 = number_neurons
@@ -71,7 +74,7 @@ for lr in learning_rates:
                 'optim_config':optim_config,
                 'lr_decay':lrd,
                 'batch_size':100,
-                'num_epochs':1,
+                'num_epochs':20,
                 'verbose': False
             }
 
@@ -143,6 +146,9 @@ plt.show()
 
 with open('best_model.pkl', 'wb') as handle:
     pickle.dump(best_model, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+with open('best_solver.pkl', 'wb') as handle2:
+    pickle.dump(best_solver, handle2, protocol=pickle.HIGHEST_PROTOCOL)
 
 '''
 with open('model.pkl', 'rb') as handle:
