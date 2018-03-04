@@ -38,7 +38,8 @@ best_method = None;
 best_model = None;
 best_solver = None;
 
-learning_rates = [1e-3, 1e-4, 1e-5]#, 1e-6]
+#learning_rates = [1e-3, 1e-4, 1e-5]#, 1e-6]
+learning_rates = [0.005, 0.01, 0.02]
 
 #Loop through learning rates specified above
 for lr in learning_rates:
@@ -46,13 +47,13 @@ for lr in learning_rates:
     print('LEARNING RATE: %f' % lr)
 
     #Loop through learning rate decays 0.99 down to 0.90 (?)
-    for lrd in range(99, 94, -1):
+    for lrd in range(99, 98, -1):
         lrd = lrd/100
         print('********************************')
         print('LEARNING RATE DECAY: %f' % lrd)
 
         #Loop through no of neurons from 50 to 150 with 25er steps
-        for number_neurons in range(50, 175, 25):
+        for number_neurons in range(100, 700, 200):
             print('****************')
             print('NO OF NEURONS: %d' % number_neurons)
 
