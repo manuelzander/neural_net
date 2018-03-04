@@ -9,8 +9,10 @@ import pickle
 ### LOAD DATA
 #######################################################################
 
-num_training = 25709
-num_validation = 3000
+num_training = 10000
+num_validation = 1000
+#num_training = 25709
+#num_validation = 3000
 num_test = 0
 
 print("LOAD DATA")
@@ -38,8 +40,10 @@ best_method = None;
 best_model = None;
 best_solver = None;
 
-#learning_rates = [1e-3, 1e-4, 1e-5]#, 1e-6]
-learning_rates = [0.005, 0.01, 0.02]
+learning_rates = [1e-4, 1e-3]#, 1e-6]
+#learning_rates = [1e-5, 1e-4, 1e-3, 0.005]
+
+reg = 0.2
 
 #Loop through learning rates specified above
 for lr in learning_rates:
@@ -47,26 +51,26 @@ for lr in learning_rates:
     print('LEARNING RATE: %f' % lr)
 
     #Loop through learning rate decays 0.99 down to 0.90 (?)
-    for lrd in range(99, 98, -1):
+    for lrd in range(95, 94, -1):
         lrd = lrd/100
         print('********************************')
         print('LEARNING RATE DECAY: %f' % lrd)
 
         #Loop through no of neurons from 50 to 150 with 25er steps
-        for number_neurons in range(100, 700, 200):
+        for number_neurons in range(50, 550, 50):
             print('****************')
             print('NO OF NEURONS: %d' % number_neurons)
 
             no_neurons_layer1 = number_neurons
-            no_neurons_layer2 = number_neurons
-
-            reg = 0
+            no_neurons_layer2 = number_neurons +25
+            no_neurons_layer3 = number_neurons -25
 
             #Set up of 4 models, 1 hidden layer / 2 hidden layers with and without dropout
-            model_one_layer = FullyConnectedNet([no_neurons_layer1], input_dim=1*48*48, reg=reg, dtype=np.float64)
+            #model_one_layer = FullyConnectedNet([no_neurons_layer1], input_dim=1*48*48, reg=reg, dtype=np.float64)
             model_two_layers = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=reg, dtype=np.float64)
-            model_one_layer_withdropout = FullyConnectedNet([no_neurons_layer1], input_dim=1*48*48, reg=reg, dtype=np.float64)
-            model_two_layers_withdropout = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=reg, dtype=np.float64)
+            model_three_layers = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2,no_neurons_layer3], input_dim=1*48*48, reg=reg, dtype=np.float64)
+            #model_one_layer_withdropout = FullyConnectedNet([no_neurons_layer1], input_dim=1*48*48, reg=reg, dtype=np.float64)
+            #model_two_layers_withdropout = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=reg, dtype=np.float64)
 
             #Set values for solver
             optim_config = {'learning_rate' : lr} #Note that default is 1e-2
@@ -75,22 +79,25 @@ for lr in learning_rates:
                 'optim_config':optim_config,
                 'lr_decay':lrd,
                 'batch_size':100,
-                'num_epochs':20,
+                'num_epochs':40,
                 'verbose': False
             }
 
             #Create solver instances for ech model
-            solver_one_layer = Solver(model_one_layer, data, **args)
+            #solver_one_layer = Solver(model_one_layer, data, **args)
             solver_two_layers = Solver(model_two_layers, data, **args)
-            solver_one_layer_withdropout = Solver(model_one_layer_withdropout, data, **args)
-            solver_two_layers_withdropout  = Solver(model_two_layers_withdropout, data, **args)
+            solver_three_layers = Solver(model_three_layers, data, **args)
+            #solver_one_layer_withdropout = Solver(model_one_layer_withdropout, data, **args)
+            #solver_two_layers_withdropout  = Solver(model_two_layers_withdropout, data, **args)
 
             #Train models with solver instances and store classification rates
+            '''
             solver_one_layer.train()
             classification_rate_cache['ONE_L%dNEUR%fLR_%fLRD' % (number_neurons, lr, lrd)] = solver_one_layer.best_val_acc
             if(solver_one_layer.best_val_acc > max_classification_rate):
                 best_model = solver_one_layer.model
                 best_solver = solver_one_layer
+            '''
 
             solver_two_layers.train()
             classification_rate_cache['TWO_L%dNEUR%fLR_%fLRD' % (number_neurons, lr, lrd)] = solver_two_layers.best_val_acc
@@ -98,6 +105,13 @@ for lr in learning_rates:
                 best_model = solver_two_layers.model
                 best_solver = solver_two_layers
 
+            solver_three_layers.train()
+            classification_rate_cache['THREE_L%dNEUR%fLR_%fLRD' % (number_neurons, lr, lrd)] = solver_three_layers.best_val_acc
+            if(solver_three_layers.best_val_acc > max_classification_rate):
+                best_model = solver_three_layers.model
+                best_solver = solver_three_layers
+
+            '''
             solver_one_layer_withdropout.train()
             classification_rate_cache['ONE_L%dNEUR%fLR_%fLRD_DROP' % (number_neurons, lr, lrd)] = solver_one_layer_withdropout.best_val_acc
             if(solver_one_layer_withdropout.best_val_acc > max_classification_rate):
@@ -109,6 +123,7 @@ for lr in learning_rates:
             if(solver_two_layers_withdropout.best_val_acc > max_classification_rate):
                 best_model = solver_two_layers_withdropout.model
                 best_solver = solver_two_layers_withdropout
+            '''
 
 #print(classification_rate_cache)
 print("{:<60} {:<60}".format('Method','Classification Rate'))
