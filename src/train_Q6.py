@@ -10,6 +10,10 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
 import os
 
+from src.utils.data_utils import get_FER2013_data
+
+
+
 batch_size = 32
 num_classes = 10
 epochs = 100
@@ -18,8 +22,20 @@ num_predictions = 20
 save_dir = os.path.join(os.getcwd(), 'saved_models')
 model_name = 'keras_cifar10_trained_model.h5'
 
+num_training = 25709
+num_validation = 0
+num_test = 3000
+
+print("LOAD DATA")
+data = get_FER2013_data(num_training, num_validation, num_test)
+
+x_train = data['X_train']
+y_train = data['y_train']
+x_test = data['X_test']
+y_test = data['y_test']
+
 # The data, split between train and test sets:
-(x_train, y_train), (x_test, y_test) = cifar10.load_data()
+#(x_train, y_train), (x_test, y_test) = get_FER2013_data(num_training, num_validation, num_test)
 print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
 print(x_test.shape[0], 'test samples')
