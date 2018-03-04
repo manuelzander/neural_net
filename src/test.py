@@ -78,7 +78,7 @@ def check_accuracy(self, X, y, num_samples=None, batch_size=100):
         acc = np.mean(y_pred == y)
 
         return acc
-	
+
 
     ### End of code
     return preds

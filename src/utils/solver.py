@@ -5,9 +5,7 @@ from builtins import range
 from builtins import object
 import os
 import pickle as pickle
-
 import numpy as np
-
 import src.utils.optim as optim
 
 """
@@ -284,8 +282,8 @@ class Solver(object):
 
         # Construct the confusion matrix
         confusion_matrix = construct_confusion_matrix(y,y_pred)
-        print("Confusion matrix:")
-        print(confusion_matrix)
+        #print("Confusion matrix:")
+        #print(confusion_matrix)
 
         # Calculate the prediction measures
         measures = prediction_measures(confusion_matrix)
@@ -341,6 +339,9 @@ class Solver(object):
                     for k, v in self.model.params.items():
                         self.best_params[k] = v.copy()
 
+            if(np.isnan(self.loss_history[-1]) or self.loss_history[-1] > 1e6):
+                return
+
             if last_it:
                 classification, recall, precision, f1  = self.calculate_measures(self.X_val, self.y_val,
                     num_samples=self.num_val_samples)
@@ -353,7 +354,7 @@ class Solver(object):
                 print(precision)
                 print("F1 measure:")
                 print(f1)
-
+                '''
         # At the end of training swap the best params into the model
         self.model.params = self.best_params
 
@@ -382,16 +383,11 @@ def prediction_measures(confusion_matrix):
 
         if s != 0:
             precision_vector[i] =  confusion_matrix[i,i] / sum(confusion_matrix[:,i])
-        else:
-            print ("Problem: ", confusion_matrix[:,i])
-
-
+        #else:
+            #print ("Problem: ", confusion_matrix[:,i])
 
     #F1 Measure
-    #assuming equality weighted recall and precision rates
-
     alpha = 1
-
     f1_measure = (1 + (alpha ** 2)) * ( (recall_vector * precision_vector) /
                                  (((alpha ** 2) * precision_vector) + recall_vector) )
 
