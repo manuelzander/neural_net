@@ -2,8 +2,10 @@ import glob
 import os
 import numpy as np
 import imageio
+import pickle
 
-def test_fer_model(img_folder, model="/path/to/model"):
+def test_fer_model(img_folder, model_path="model.pkl"):
+    
     """
     Given a folder with images, load the images and your best model to predict
     the facial expression of each image.
@@ -16,26 +18,35 @@ def test_fer_model(img_folder, model="/path/to/model"):
     preds = None
 
     ### Start your code here
-  
-    #convert img_folder into preds numpy vector  
-    i = 0
-    for filename in os.listdir(img_folder):
-        print (i)
-        i += 1
-
     
-    n_pictures = 0;
-    for image in glob.iglob(img_folder):
-        print ("TEST")
-	n_pictures += 1
+    #Load model
+    with open(model_path, 'rb') as handle:
+        model = pickle.load(handle)
+        
+    print ("Function is started")
+    
+    #convert img_folder into preds numpy vector  
+    n_pictures = 0
+    for filename in os.listdir(img_folder):
+        n_pictures += 1
+        print (n_pictures)
 
     images = np.zeros((n_pictures, 48, 48, 1))
-
+        
     i = 0
-    for image in glob.glob(img_folder):
-	images[i] = imageio.imread(image)[:,:,0].reshape((48,48,1))
+    for filename in os.listdir(img_folder):
+        picture_path = os.path.join("datasets/FER2013/Test", filename)
+        images[i] = imageio.imread(picture_path)[:,:,0].reshape((48,48,1))
+        #print (images[i])
         i += 1
 
+    # feed pictures into NN and get predictions
+    scores = model.loss(images)
+    preds = np.argmax(scores, axis=1)
+
+    
+    return preds
+    
 test_fer_model("datasets/FER2013/Test")
 
 '''
@@ -78,7 +89,7 @@ def check_accuracy(self, X, y, num_samples=None, batch_size=100):
         acc = np.mean(y_pred == y)
 
         return acc
-
+	
 
     ### End of code
     return preds
