@@ -11,13 +11,14 @@ from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling
 import os
 
 from src.utils.data_utils import get_FER2013_data
+from keras import backend as K
 
-
+K.set_image_data_format('channels_first')
 
 batch_size = 32
-num_classes = 10
-epochs = 100
-data_augmentation = True
+num_classes = 7
+epochs = 50
+data_augmentation = False
 num_predictions = 20
 save_dir = os.path.join(os.getcwd(), 'saved_models')
 model_name = 'keras_cifar10_trained_model.h5'
@@ -44,9 +45,11 @@ print(x_test.shape[0], 'test samples')
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
+
 model = Sequential()
 model.add(Conv2D(32, (3, 3), padding='same',
-                 input_shape=x_train.shape[1:]))
+                 input_shape= (1, 48, 48) ))
+#input_shape=x_train.shape[1:]))
 model.add(Activation('relu'))
 model.add(Conv2D(32, (3, 3)))
 model.add(Activation('relu'))
