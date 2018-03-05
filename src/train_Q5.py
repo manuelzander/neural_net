@@ -72,7 +72,7 @@ for lr in learning_rates:
             'optim_config':optim_config,
             'lr_decay':0.95,
             'batch_size':100,
-            'num_epochs':50,
+            'num_epochs':20,
             'verbose': False
         }
 

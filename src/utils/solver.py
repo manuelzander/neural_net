@@ -342,6 +342,11 @@ class Solver(object):
             if(np.isnan(self.loss_history[-1]) or self.loss_history[-1] > 1e6):
                 return
 
+            #Stopping criterium
+            if(self.epoch > 3):
+                if(self.val_acc_history[-1] < self.val_acc_history[-2] and self.val_acc_history[-2] < self.val_acc_history[-3] and self.val_acc_history[-3] < self.val_acc_history[-4]):
+                    return
+
             if last_it:
                 classification, recall, precision, f1  = self.calculate_measures(self.X_val, self.y_val,
                     num_samples=self.num_val_samples)
