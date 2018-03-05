@@ -9,7 +9,7 @@ from keras.models import load_model
 
 
 # TO DO: change the path of the model
-def test_fer_model(img_folder, model_path="model.pkl"):
+def test_fer_model(img_folder, model_path="saved_models/model.pkl"):
     
     """
     Given a folder with images, load the images and your best model to predict
@@ -23,6 +23,9 @@ def test_fer_model(img_folder, model_path="model.pkl"):
     preds = None
 
     ### Start your code here
+
+    root_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    model_path = os.path.join(root_path, model_path)
     
     #Load model
     with open(model_path, 'rb') as handle:
@@ -41,7 +44,8 @@ def test_fer_model(img_folder, model_path="model.pkl"):
         
     i = 0
     for filename in images_list:
-        picture_path = os.path.join("datasets/FER2013/Test", filename)
+        #check this one
+        picture_path = os.path.join(images_list, filename)
         images[i] = imageio.imread(picture_path)[:,:,0].reshape((48,48,1))
         i += 1
 
@@ -53,7 +57,7 @@ def test_fer_model(img_folder, model_path="model.pkl"):
 
 # TO DO: change the path of the model
 # Tests the model with the secret dataset
-def test_deep_fer_model(img_folder, model_path="./saved_models/keras_cifar10_trained_model.h5"):
+def test_deep_fer_model(img_folder, model_path="saved_models/keras_cifar10_trained_model.h5"):
     
     """
     Given a folder with images, load the images and your best model to predict
@@ -68,7 +72,10 @@ def test_deep_fer_model(img_folder, model_path="./saved_models/keras_cifar10_tra
 
     ### Start your code here
     
-    #sorting the folder names in lexographic order
+    root_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    model_path = os.path.join(root_path, model_path)
+
+    #getting folder names and sorting the folder names in lexographic order
     images_list = os.listdir(img_folder)
     images_list.sort()
     
@@ -106,6 +113,12 @@ def test_deep_fer_model(img_folder, model_path="./saved_models/keras_cifar10_tra
 # Reports the confusion matrix and prediction measures using the FER2013 dataset
 def test_Q6_FER2013(prediction_pickle_path, model_path="saved_models/keras_cifar10_trained_model.h5"):
 
+    root_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    model_path = os.path.join(root_path, model_path)
+
+    
+    prediction_pickle_path = os.path.join(root_path, prediction_pickle_path)
+    
     # Load data from pickle file
     with open(prediction_pickle_path, 'rb') as handle:
         data = pickle.load(handle) 
@@ -118,7 +131,6 @@ def test_Q6_FER2013(prediction_pickle_path, model_path="saved_models/keras_cifar
     model = load_model(model_path)
     opt = keras.optimizers.rmsprop(lr=0.0001, decay=1e-6)
     model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
-
     
     preds = model.predict(X_test)
 
@@ -130,19 +142,22 @@ def test_Q6_FER2013(prediction_pickle_path, model_path="saved_models/keras_cifar
     classification_rate, recall_vector, precision_vector, f1_measure = prediction_measures(confusion_matrix)
     return confusion_matrix, classification_rate, recall_vector, precision_vector, f1_measure
 
+
+
+
 confusion_matrix, classification_rate, _, _, f1_measure = test_Q6_FER2013("FER2013_data.pickle")
 
-
+'''
 print ("Confusion matrix: ")
 print (confusion_matrix, "\n")
 print ("Classification rate: ")
 print (classification_rate, "\n")
 print ("F1 measure: ")
 print (f1_measure)
-
-
-'''### QUESTION 6 TEST ###
-#pred  = test_deep_fer_model("datasets/FER2013/Train/", model_path="saved_models/keras_cifar10_trained_model.h5")
-
-#print (pred)
 '''
+
+### QUESTION 6 TEST ###
+pred  = test_deep_fer_model("datasets/FER2013/Train/", model_path="saved_models/keras_cifar10_trained_model.h5")
+
+print (pred)
+

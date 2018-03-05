@@ -17,7 +17,7 @@ K.set_image_data_format('channels_first')
 
 batch_size = 32
 num_classes = 7
-epochs = 20
+epochs = 15
 data_augmentation = False
 num_predictions = 20
 save_dir = os.path.join(os.getcwd(), 'saved_models')
@@ -44,7 +44,6 @@ print(x_test.shape[0], 'test samples')
 # Convert class vectors to binary class matrices.
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
-
 
 model = Sequential()
 model.add(Conv2D(32, (3, 3), padding='same',
@@ -129,5 +128,6 @@ print('Saved trained model at %s ' % model_path)
 
 # Score trained model.
 scores = model.evaluate(x_test, y_test, verbose=1)
+
 print('Test loss:', scores[0])
 print('Test accuracy:', scores[1])
