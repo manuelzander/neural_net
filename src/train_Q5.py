@@ -9,7 +9,7 @@ import pickle
 ### LOAD DATA
 #######################################################################
 
-num_training = 10000
+num_training = 20000
 num_validation = 3000
 #num_training = 25709
 #num_validation = 3000
@@ -39,11 +39,10 @@ max_classification_rate = 0.0;
 best_method = None;
 best_model = None;
 best_solver = None;
-
-learning_rates = [1e-3]#, 1e-6]
+learning_rates = [1e-2, 5e-2, 1e-3, 5e-3, 1e-4, 1e-5]#, 1e-6]
 #learning_rates = [1e-5, 1e-4, 1e-3, 0.005]
 
-reg = 0.20
+reg = 0.0
 
 #Loop through learning rates specified above
 for lr in learning_rates:
@@ -51,11 +50,15 @@ for lr in learning_rates:
     print('LEARNING RATE: %f' % lr)
 
     #Loop through no of neurons
-    for number_neurons in range(150, 450, 100):
+<<<<<<< HEAD
+    for number_neurons in range(350, 1350, 50):
+=======
+    for number_neurons in range(200, 1400, 600):
+>>>>>>> 8381166c01ad5b469d8917be3b844a841b6eb4ed
         print('****************************')
         print('NO OF NEURONS: %d' % number_neurons)
 
-        no_neurons_layer1 = number_neurons
+        no_neurons_layer1 = number_neurons + 25
         no_neurons_layer2 = number_neurons
         no_neurons_layer3 = number_neurons
 
@@ -71,7 +74,7 @@ for lr in learning_rates:
         args = {
             'update_rule':"sgd_momentum", #Note that this is 0.9 default in optim.py
             'optim_config':optim_config,
-            'lr_decay':0.96,
+            'lr_decay':0.95,
             'batch_size':100,
             'num_epochs':50,
             'verbose': False
