@@ -177,7 +177,7 @@ class FullyConnectedNet(object):
             #DROPOUT LAYER
             if self.use_dropout:
                 #dropout_cache['X%d' % (i + 1)] = scores
-                scores, mask = dropout_forward(scores, self.dropout_params)
+                scores, mask = dropout_forward(scores, p=self.dropout_params['p'], train=self.dropout_params['train'])
                 dropout_cache['m%d' % (i + 1)] = mask
 
         #increase i counter by one for last layer

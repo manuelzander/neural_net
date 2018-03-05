@@ -284,7 +284,7 @@ class Solver(object):
 
         # Construct the confusion matrix
         confusion_matrix = construct_confusion_matrix(y,y_pred)
-        #print("Confusion matrix:")
+        print("Confusion matrix:")
         #print(confusion_matrix)
 
         # Calculate the prediction measures

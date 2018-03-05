@@ -9,7 +9,7 @@ import pickle
 ### LOAD DATA
 #######################################################################
 
-num_training = 25709
+num_training = 20000
 num_validation = 3000
 #num_training = 25709
 #num_validation = 3000
@@ -41,10 +41,8 @@ best_model = None;
 best_solver = None;
 solvers = [];
 
-learning_rates = [1e-2, 5e-2, 1e-3, 5e-3, 1e-4, 1e-5]#, 1e-6]
-#learning_rates = [1e-5, 1e-4, 1e-3, 0.005]
-
-reg = 0.0
+#learning_rates = [1e-2, 1e-3, 5e-3, 1e-4, 5e-4, 1e-5]
+learning_rates = [1e-3] #Use this one, turned out to be th best
 
 #Loop through learning rates specified above
 for lr in learning_rates:
@@ -58,14 +56,15 @@ for lr in learning_rates:
 
         no_neurons_layer1 = number_neurons
         no_neurons_layer2 = number_neurons
-        no_neurons_layer3 = number_neurons
+        #no_neurons_layer3 = number_neurons
 
         #Set up of 4 models, 1 hidden layer / 2 hidden layers with and without dropout
         #model_one_layer = FullyConnectedNet([no_neurons_layer1], input_dim=1*48*48, reg=reg, dtype=np.float64)
-        model_two_layers = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=reg, dtype=np.float64)
+        model_two_layers = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=0.0, dtype=np.float64)
+        model_two_layers_L2 = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=0.005, dtype=np.float64)
         #model_three_layers = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2,no_neurons_layer3], input_dim=1*48*48, reg=reg, dtype=np.float64)
         #model_one_layer_withdropout = FullyConnectedNet([no_neurons_layer1], input_dim=1*48*48, dropout=0.5, reg=reg, dtype=np.float64)
-        #model_two_layers_withdropout = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, dropout=0.5, reg=reg, dtype=np.float64)
+        #model_two_layers_withdropout = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, dropout=0.05, reg=reg, dtype=np.float64)
 
         #Set values for solver
         optim_config = {'learning_rate' : lr} #Note that default is 1e-2
@@ -74,17 +73,18 @@ for lr in learning_rates:
             'optim_config':optim_config,
             'lr_decay':0.95,
             'batch_size':100,
-            'num_epochs':20,
+            'num_epochs':40,
             'verbose': False
         }
 
-        #Create solver instances for ech model
+        #Create solver instances for each model
         #solver_one_layer = Solver(model_one_layer, data, **args)
         solver_two_layers = Solver(model_two_layers, data, **args)
+        solver_two_layers_L2 = Solver(model_two_layers_L2, data, **args)
         #solver_three_layers = Solver(model_three_layers, data, **args)
         #solver_one_layer_withdropout = Solver(model_one_layer_withdropout, data, **args)
         #solver_two_layers_withdropout  = Solver(model_two_layers_withdropout, data, **args)
-        solvers.append(solver_two_layers)
+        #solvers.append(solver_two_layers)
 
         #Train models with solver instances and store classification rates
         '''
@@ -94,11 +94,18 @@ for lr in learning_rates:
             best_model = solver_one_layer.model
             best_solver = solver_one_layer
         '''
+
         solver_two_layers.train()
         classification_rate_cache['TWO_L%dNEUR%fLR' % (number_neurons, lr)] = solver_two_layers.best_val_acc
         if(solver_two_layers.best_val_acc > max_classification_rate):
             best_model = solver_two_layers.model
             best_solver = solver_two_layers
+
+        solver_two_layers_L2.train()
+        classification_rate_cache['TWO_L%dNEUR%fLR_L2' % (number_neurons, lr)] = solver_two_layers_L2.best_val_acc
+        if(solver_two_layers_L2.best_val_acc > max_classification_rate):
+            best_model = solver_two_layers_L2.model
+            best_solver = solver_two_layers_L2
 
         '''
         solver_three_layers.train()
@@ -133,23 +140,61 @@ print('Max classification rate: %f' % max_classification_rate)
 print('Best method: %s' % best_method)
 
 #######################################################################
-### PLOT GRAPH FOR LEARNING RATE OPIMIZATION
+### PLOT GRAPH FOR USING DROPOUT
 #######################################################################
 
+plt.subplot(2, 2, 1)
+plt.title("Training loss")
+plt.plot(solver_two_layers.loss_history, "o", markersize=0.5)
+plt.xlabel('Iteration')
+
+plt.subplot(2, 2, 2)
+plt.title('Accuracy')
+plt.plot(solver_two_layers.train_acc_history, '-o', label='train', markersize=0.5)
+plt.plot(solver_two_layers.val_acc_history, '-o', label='val', markersize=0.5)
+plt.xlabel('Epoch')
+
+plt.subplot(2, 2, 3)
+plt.title("Training loss")
+plt.plot(solver_two_layers_L2.loss_history, "o", markersize=0.5)
+plt.xlabel('Iteration')
+
+plt.subplot(2, 2, 4)
+plt.title('Accuracy')
+plt.plot(solver_two_layers_L2.train_acc_history, '-o', label='train', markersize=0.5)
+plt.plot(solver_two_layers_L2.val_acc_history, '-o', label='val', markersize=0.5)
+plt.xlabel('Epoch')
+
+plt.legend(loc='lower right')
+plt.gcf().set_size_inches(15, 12)
+plt.show()
+
+#######################################################################
+### PLOT GRAPH FOR LEARNING RATE OPIMIZATION
+#######################################################################
+'''
 plt.subplot(2, 1, 1)
 plt.title("Training loss")
 plt.gca().set_ylim([0,2.5])
 for i in range(0, len(solvers)):
     plt.plot(solvers[i].loss_history, "o", label='%f lr' % learning_rates[i], markersize=0.5)
 plt.xlabel('Iteration')
-plt.legend(loc='upper right')
+#plt.legend(loc='upper right')
 
-plt.subplot(2, 1, 2)
+plt.subplot(2, 2, 3)
+plt.title('Accuracy (training)')
+for i in range(0, len(solvers)):
+    plt.plot(solvers[i].train_acc_history, '-o', label='%f lr' % learning_rates[i], markersize=3)
+plt.xlabel('Epoch')
+#plt.legend(loc='lower right')
+
+plt.subplot(2, 2, 4)
 plt.title('Accuracy (validation)')
 for i in range(0, len(solvers)):
     plt.plot(solvers[i].val_acc_history, '-o', label='%f lr' % learning_rates[i], markersize=3)
 plt.xlabel('Epoch')
 plt.legend(loc='lower right')
+'''
 '''
 plt.subplot(2, 2, 3)
 plt.title('F1 measure')
@@ -165,8 +210,8 @@ for i in range(0, len(solvers)):
 plt.xlabel('Learning rates')
 plt.legend(loc='upper right')
 '''
-plt.gcf().set_size_inches(15, 12)
-plt.show()
+#plt.gcf().set_size_inches(15, 12)
+#plt.show()
 
 #######################################################################
 ### PLOT GRAPH

@@ -49,6 +49,8 @@ def softmax(logits, y):
 	#print(logits.shape)
 	#print(logits[:,0])
 
+	epsi = np.finfo(np.float64).eps
+
 	num_classes = logits.shape[1]
 	num_train = logits.shape[0]
 
@@ -59,7 +61,7 @@ def softmax(logits, y):
 	#print(logits_exp)
 	p = logits_exp/sum_of_exp
 
-	correct_class_probabilities = -np.log(p[range(num_train), y])
+	correct_class_probabilities = -np.log(p[range(num_train), y] + epsi)
 	loss = np.sum(correct_class_probabilities)/num_train
 
         #calculate gradient
