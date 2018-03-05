@@ -345,8 +345,10 @@ class Solver(object):
             if last_it:
                 classification, recall, precision, f1  = self.calculate_measures(self.X_val, self.y_val,
                     num_samples=self.num_val_samples)
+
                 print("Classification rate:")
-                print(classification)
+                print(self.best_val_acc)
+                #print(classification)
                 '''
                 print("Recall rate:")
                 print(recall)
