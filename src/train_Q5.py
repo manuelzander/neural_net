@@ -9,7 +9,7 @@ import pickle
 ### LOAD DATA
 #######################################################################
 
-num_training = 10000
+num_training = 25709
 num_validation = 3000
 #num_training = 25709
 #num_validation = 3000
@@ -39,6 +39,8 @@ max_classification_rate = 0.0;
 best_method = None;
 best_model = None;
 best_solver = None;
+solvers = [];
+
 learning_rates = [1e-2, 5e-2, 1e-3, 5e-3, 1e-4, 1e-5]#, 1e-6]
 #learning_rates = [1e-5, 1e-4, 1e-3, 0.005]
 
@@ -50,7 +52,7 @@ for lr in learning_rates:
     print('LEARNING RATE: %f' % lr)
 
     #Loop through no of neurons
-    for number_neurons in range(200, 1400, 600):
+    for number_neurons in range(200, 800, 600):
         print('****************************')
         print('NO OF NEURONS: %d' % number_neurons)
 
@@ -82,6 +84,7 @@ for lr in learning_rates:
         #solver_three_layers = Solver(model_three_layers, data, **args)
         #solver_one_layer_withdropout = Solver(model_one_layer_withdropout, data, **args)
         #solver_two_layers_withdropout  = Solver(model_two_layers_withdropout, data, **args)
+        solvers.append(solver_two_layers)
 
         #Train models with solver instances and store classification rates
         '''
@@ -130,9 +133,45 @@ print('Max classification rate: %f' % max_classification_rate)
 print('Best method: %s' % best_method)
 
 #######################################################################
-### PLOT GRAPH
+### PLOT GRAPH FOR LEARNING RATE OPIMIZATION
 #######################################################################
 
+plt.subplot(2, 1, 1)
+plt.title("Training loss")
+plt.gca().set_ylim([0,2.5])
+for i in range(0, len(solvers)):
+    plt.plot(solvers[i].loss_history, "o", label='%f lr' % learning_rates[i], markersize=0.5)
+plt.xlabel('Iteration')
+plt.legend(loc='upper right')
+
+plt.subplot(2, 1, 2)
+plt.title('Accuracy (validation)')
+for i in range(0, len(solvers)):
+    plt.plot(solvers[i].val_acc_history, '-o', label='%f lr' % learning_rates[i], markersize=3)
+plt.xlabel('Epoch')
+plt.legend(loc='lower right')
+'''
+plt.subplot(2, 2, 3)
+plt.title('F1 measure')
+for i in range(0, len(solvers)):
+    plt.bar(solvers[i].final_F1, '-o', label='val')
+plt.xlabel('Learning rates')
+plt.legend(loc='upper right')
+
+plt.subplot(2, 2, 4)
+plt.title('Precision rate')
+for i in range(0, len(solvers)):
+    plt.bar(solvers[i].final_precision, '-o', label='val')
+plt.xlabel('Learning rates')
+plt.legend(loc='upper right')
+'''
+plt.gcf().set_size_inches(15, 12)
+plt.show()
+
+#######################################################################
+### PLOT GRAPH
+#######################################################################
+'''
 plt.subplot(2, 1, 1)
 plt.title("Training loss")
 plt.plot(best_solver.loss_history, "o")
@@ -147,7 +186,7 @@ plt.xlabel('Epoch')
 plt.legend(loc='lower right')
 plt.gcf().set_size_inches(15, 12)
 plt.show()
-
+'''
 #######################################################################
 ### SAVE AND LOAD MODEL
 #######################################################################
