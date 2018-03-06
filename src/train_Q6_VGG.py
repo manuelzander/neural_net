@@ -17,21 +17,24 @@ K.set_image_data_format('channels_first')
 
 batch_size = 32
 num_classes = 7
-epochs = 20
-data_augmentation = False
+epochs = 17
+data_augmentation = True
 num_predictions = 20
 save_dir = os.path.join(os.getcwd(), 'saved_models')
-model_name = 'VGG.h5'
+model_name = 'VGG_08_20_29.h5'
 
 num_training = 25709
 num_validation = 0
-num_test = 3000
+num_test = 3589
 
 print("LOAD DATA")
-data = get_FER2013_data(num_training, num_validation, num_test)
+data = get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True)
 
 x_train = data['X_train']
 y_train = data['y_train']
+
+# This is effectively our validation set
+# In the model this is called X_test and y_test though
 x_test = data['X_test']
 y_test = data['y_test']
 
@@ -45,43 +48,41 @@ print(x_test.shape[0], 'test samples')
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
-
-
 model = Sequential()
 model.add(ZeroPadding2D((1,1),input_shape=(1,48,48)))
-model.add(Convolution2D(64, 3, 3, activation='relu'))
+model.add(Conv2D(64, 3, 3, activation='relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(64, 3, 3, activation='relu'))
+model.add(Conv2D(64, 3, 3, activation='relu'))
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(128, 3, 3, activation='relu'))
+model.add(Conv2D(128, 3, 3, activation='relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(128, 3, 3, activation='relu'))
+model.add(Conv2D(128, 3, 3, activation='relu'))
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(256, 3, 3, activation='relu'))
+model.add(Conv2D(256, 3, 3, activation='relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(256, 3, 3, activation='relu'))
+model.add(Conv2D(256, 3, 3, activation='relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(256, 3, 3, activation='relu'))
+model.add(Conv2D(256, 3, 3, activation='relu'))
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(512, 3, 3, activation='relu'))
+model.add(Conv2D(512, 3, 3, activation='relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(512, 3, 3, activation='relu'))
+model.add(Conv2D(512, 3, 3, activation='relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(512, 3, 3, activation='relu'))
+model.add(Conv2D(512, 3, 3, activation='relu'))
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(512, 3, 3, activation='relu'))
+model.add(Conv2D(512, 3, 3, activation='relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(512, 3, 3, activation='relu'))
+model.add(Conv2D(512, 3, 3, activation='relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Convolution2D(512, 3, 3, activation='relu'))
+model.add(Conv2D(512, 3, 3, activation='relu'))
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(Flatten())

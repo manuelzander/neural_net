@@ -24,16 +24,19 @@ save_dir = os.path.join(os.getcwd(), 'saved_models')
 model_name = 'keras_cifar10_trained_model.h5'
 
 num_training = 25709
-num_validation = 0
-num_test = 3000
+num_validation = 3000
+num_test = 0
 
 print("LOAD DATA")
 data = get_FER2013_data(num_training, num_validation, num_test)
 
 x_train = data['X_train']
 y_train = data['y_train']
-x_test = data['X_test']
-y_test = data['y_test']
+
+# This is effectively our validation set
+# In the model this is called X_test and y_test though
+x_test = data['X_val']
+y_test = data['y_val']
 
 # The data, split between train and test sets:
 #(x_train, y_train), (x_test, y_test) = get_FER2013_data(num_training, num_validation, num_test)
