@@ -314,8 +314,26 @@ class Solver(object):
             epoch_end = (t + 1) % iterations_per_epoch == 0
             if epoch_end:
                 self.epoch += 1
+
+
+                if ((self.epoch % 5) == 0):
+
+                    print(self.epoch)
+
+                    for k in self.optim_configs:
+                        self.optim_configs[k]['learning_rate'] *= 0.75
+                        print(self.optim_configs[k]['learning_rate'])
+
+                    for k in self.optim_configs:
+                        if((self.optim_configs[k]['momentum'] *1.1) < 1):
+                            self.optim_configs[k]['momentum'] *= 1.1
+                            print(self.optim_configs[k]['momentum'])
+
+                '''
+
                 for k in self.optim_configs:
                     self.optim_configs[k]['learning_rate'] *= self.lr_decay
+                '''
 
             # Check train and val accuracy on the first iteration, the last
             # iteration, and at the end of each epoch.

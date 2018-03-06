@@ -80,8 +80,8 @@ for lr in learning_rates:
         #model_two_layers = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=0, dtype=np.float64)
         #model_two_layers_L2 = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=rv, dtype=np.float64)
         #model_three_layers = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2,no_neurons_layer3], input_dim=1*48*48, reg=0, dtype=np.float64)
-        model_one_layer_withdropout = FullyConnectedNet([no_neurons_layer1], input_dim=1*48*48, dropout=dr, reg=0, dtype=np.float64)
-        #model_two_layers_withdropout = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, dropout=dr, reg=0, dtype=np.float64)
+        #model_one_layer_withdropout = FullyConnectedNet([no_neurons_layer1], input_dim=1*48*48, dropout=dr, reg=0, dtype=np.float64)
+        model_two_layers_withdropout = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, dropout=dr, reg=0, dtype=np.float64)
 
         #Set values for solver
         optim_config = {'learning_rate' : lr} #Note that default is 1e-2
@@ -90,7 +90,7 @@ for lr in learning_rates:
             'optim_config':optim_config,
             'lr_decay':0.95,
             'batch_size':100,
-            'num_epochs':20,
+            'num_epochs':30,
             'verbose': False
         }
 
@@ -99,9 +99,9 @@ for lr in learning_rates:
         #solver_two_layers = Solver(model_two_layers, data, **args)
         #solver_two_layers_L2 = Solver(model_two_layers_L2, data, **args)
         #solver_three_layers = Solver(model_three_layers, data, **args)
-        solver_one_layer_withdropout = Solver(model_one_layer_withdropout, data, **args)
-        #solver_two_layers_withdropout  = Solver(model_two_layers_withdropout, data, **args)
-        solvers.append(solver_one_layer_withdropout)
+        #solver_one_layer_withdropout = Solver(model_one_layer_withdropout, data, **args)
+        solver_two_layers_withdropout  = Solver(model_two_layers_withdropout, data, **args)
+        solvers.append(solver_two_layers_withdropout)
 
         #Train models with solver instances and store classification rates
         '''
@@ -130,7 +130,7 @@ for lr in learning_rates:
         if(solver_three_layers.best_val_acc > max_classification_rate):
             best_model = solver_three_layers.model
             best_solver = solver_three_layers
-        '''
+
         solver_one_layer_withdropout.train()
         classification_rate_cache['ONE_L%dNEUR%fLR_DROP' % (number_neurons, lr)] = solver_one_layer_withdropout.best_val_acc
         if(solver_one_layer_withdropout.best_val_acc > max_classification_rate):
@@ -142,7 +142,7 @@ for lr in learning_rates:
         if(solver_two_layers_withdropout.best_val_acc > max_classification_rate):
             best_model = solver_two_layers_withdropout.model
             best_solver = solver_two_layers_withdropout
-        '''
+
 
 #print(classification_rate_cache)
 print("{:<60} {:<60}".format('Method','Classification Rate'))
@@ -164,7 +164,7 @@ plt.subplot(2, 1, 1)
 plt.title("Training loss")
 plt.gca().set_ylim([1,5])
 for i in range(0, len(solvers)):
-    plt.plot(solvers[i].loss_history, "o", label='%d Neurons' % neurons[i], markersize=0.5)
+    plt.plot(solvers[i].loss_history, "o", label='%d NL1, %d NL2' % (neurons[i], neurons[i]), markersize=0.5)
 plt.xlabel('Iteration')
 #plt.legend(loc='upper right')
 
@@ -172,7 +172,7 @@ plt.subplot(2, 2, 3)
 plt.title('Accuracy (training)')
 plt.gca().set_ylim([0.1,0.85])
 for i in range(0, len(solvers)):
-    plt.plot(solvers[i].train_acc_history, '-o', label='%d Neurons' % neurons[i], markersize=3)
+    plt.plot(solvers[i].train_acc_history, '-o', label='%d NL1, %d NL2' % (neurons[i], neurons[i]), markersize=3)
 plt.xlabel('Epoch')
 #plt.legend(loc='lower right')
 
@@ -180,7 +180,7 @@ plt.subplot(2, 2, 4)
 plt.title('Accuracy (validation)')
 plt.gca().set_ylim([0.1,0.45])
 for i in range(0, len(solvers)):
-    plt.plot(solvers[i].val_acc_history, '-o', label='%d Neurons' % neurons[i], markersize=3)
+    plt.plot(solvers[i].val_acc_history, '-o', label='%d NL1, %d NL2' % (neurons[i], neurons[i]), markersize=3)
 plt.xlabel('Epoch')
 plt.legend(loc='lower right')
 
