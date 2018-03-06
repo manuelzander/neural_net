@@ -175,7 +175,7 @@ class FullyConnectedNet(object):
             #print(scores.shape)
 
             #DROPOUT LAYER
-            if self.use_dropout:
+            if self.use_dropout and y is not None:
                 #dropout_cache['X%d' % (i + 1)] = scores
                 scores, mask = dropout_forward(scores, p=self.dropout_params['p'], train=self.dropout_params['train'])
                 dropout_cache['m%d' % (i + 1)] = mask

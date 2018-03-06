@@ -284,7 +284,7 @@ class Solver(object):
 
         # Construct the confusion matrix
         confusion_matrix = construct_confusion_matrix(y,y_pred)
-        print("Confusion matrix:")
+        #print("Confusion matrix:")
         #print(confusion_matrix)
 
         # Calculate the prediction measures
@@ -341,8 +341,8 @@ class Solver(object):
                     for k, v in self.model.params.items():
                         self.best_params[k] = v.copy()
 
-            if(np.isnan(self.loss_history[-1]) or self.loss_history[-1] > 1e6):
-                return
+            #if(np.isnan(self.loss_history[-2]) or self.loss_history[-2] > 1e6):
+                #return
 
             #Stopping criterium
             if(self.epoch > 4):
@@ -363,11 +363,11 @@ class Solver(object):
                 '''
                 print("Recall rate:")
                 print(recall)
-                '''
                 print("Precision rate")
                 print(self.final_precision)
                 print("F1 measure:")
                 print(self.final_F1)
+                '''
 
         # At the end of training swap the best params into the model
         self.model.params = self.best_params
