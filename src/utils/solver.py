@@ -316,18 +316,18 @@ class Solver(object):
                 self.epoch += 1
 
 
-                if ((self.epoch % 5) == 0):
+                if ((self.epoch % 10) == 0):
 
                     print(self.epoch)
 
                     for k in self.optim_configs:
-                        self.optim_configs[k]['learning_rate'] *= 0.75
-                        print(self.optim_configs[k]['learning_rate'])
+                        self.optim_configs[k]['learning_rate'] *= 0.8
+                        #print(self.optim_configs[k]['learning_rate'])
 
                     for k in self.optim_configs:
                         if((self.optim_configs[k]['momentum'] *1.1) < 1):
                             self.optim_configs[k]['momentum'] *= 1.1
-                            print(self.optim_configs[k]['momentum'])
+                            #print(self.optim_configs[k]['momentum'])
 
                 '''
 
