@@ -42,12 +42,19 @@ best_solver = None;
 solvers = [];
 
 #learning_rates = [1e-2, 1e-3, 5e-3, 1e-4, 5e-4, 1e-5]
-learning_rates = [1e-3] #Use this one, turned out to be th best
+#learning_rates = [1e-3] #Use this one, turned out to be th best
+lr = 1e-3
+regularization_values = [0.0005, 0.001, 0.005, 0.01, 0.1, 0.2]
 
 #Loop through learning rates specified above
+'''
 for lr in learning_rates:
     print('*************************************************************')
     print('LEARNING RATE: %f' % lr)
+'''
+for rv in regularization_values:
+    print('*************************************************************')
+    print('L2 REG VALUE: %f' % rv)
 
     #Loop through no of neurons
     for number_neurons in range(200, 800, 600):
@@ -60,8 +67,8 @@ for lr in learning_rates:
 
         #Set up of 4 models, 1 hidden layer / 2 hidden layers with and without dropout
         #model_one_layer = FullyConnectedNet([no_neurons_layer1], input_dim=1*48*48, reg=reg, dtype=np.float64)
-        model_two_layers = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=0.0, dtype=np.float64)
-        model_two_layers_L2 = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=0.005, dtype=np.float64)
+        #model_two_layers = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=0.0, dtype=np.float64)
+        model_two_layers_L2 = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, reg=rv, dtype=np.float64)
         #model_three_layers = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2,no_neurons_layer3], input_dim=1*48*48, reg=reg, dtype=np.float64)
         #model_one_layer_withdropout = FullyConnectedNet([no_neurons_layer1], input_dim=1*48*48, dropout=0.5, reg=reg, dtype=np.float64)
         #model_two_layers_withdropout = FullyConnectedNet([no_neurons_layer1,no_neurons_layer2], input_dim=1*48*48, dropout=0.05, reg=reg, dtype=np.float64)
@@ -73,18 +80,18 @@ for lr in learning_rates:
             'optim_config':optim_config,
             'lr_decay':0.95,
             'batch_size':100,
-            'num_epochs':40,
+            'num_epochs':20,
             'verbose': False
         }
 
         #Create solver instances for each model
         #solver_one_layer = Solver(model_one_layer, data, **args)
-        solver_two_layers = Solver(model_two_layers, data, **args)
+        #solver_two_layers = Solver(model_two_layers, data, **args)
         solver_two_layers_L2 = Solver(model_two_layers_L2, data, **args)
         #solver_three_layers = Solver(model_three_layers, data, **args)
         #solver_one_layer_withdropout = Solver(model_one_layer_withdropout, data, **args)
         #solver_two_layers_withdropout  = Solver(model_two_layers_withdropout, data, **args)
-        #solvers.append(solver_two_layers)
+        solvers.append(solver_two_layers_L2)
 
         #Train models with solver instances and store classification rates
         '''
@@ -94,15 +101,15 @@ for lr in learning_rates:
             best_model = solver_one_layer.model
             best_solver = solver_one_layer
         '''
-
+        '''
         solver_two_layers.train()
         classification_rate_cache['TWO_L%dNEUR%fLR' % (number_neurons, lr)] = solver_two_layers.best_val_acc
         if(solver_two_layers.best_val_acc > max_classification_rate):
             best_model = solver_two_layers.model
             best_solver = solver_two_layers
-
+        '''
         solver_two_layers_L2.train()
-        classification_rate_cache['TWO_L%dNEUR%fLR_L2' % (number_neurons, lr)] = solver_two_layers_L2.best_val_acc
+        classification_rate_cache['TWO_L%dNEUR%fLR_%fL2' % (number_neurons, lr, rv)] = solver_two_layers_L2.best_val_acc
         if(solver_two_layers_L2.best_val_acc > max_classification_rate):
             best_model = solver_two_layers_L2.model
             best_solver = solver_two_layers_L2
@@ -142,7 +149,7 @@ print('Best method: %s' % best_method)
 #######################################################################
 ### PLOT GRAPH FOR USING DROPOUT
 #######################################################################
-
+'''
 plt.subplot(2, 2, 1)
 plt.title("Training loss")
 plt.plot(solver_two_layers.loss_history, "o", markersize=0.5)
@@ -166,6 +173,36 @@ plt.plot(solver_two_layers_L2.val_acc_history, '-o', label='val', markersize=0.5
 plt.xlabel('Epoch')
 
 plt.legend(loc='lower right')
+plt.gcf().set_size_inches(15, 12)
+plt.show()
+'''
+
+#######################################################################
+### PLOT GRAPH FOR L2 REG VALUE OPIMIZATION
+#######################################################################
+
+plt.subplot(2, 1, 1)
+plt.title("Training loss")
+plt.gca().set_ylim([0,4])
+for i in range(0, len(solvers)):
+    plt.plot(solvers[i].loss_history, "o", label='%f rv' % regularization_values[i], markersize=0.5)
+plt.xlabel('Iteration')
+#plt.legend(loc='upper right')
+
+plt.subplot(2, 2, 3)
+plt.title('Accuracy (training)')
+for i in range(0, len(solvers)):
+    plt.plot(solvers[i].train_acc_history, '-o', label='%f rv' % regularization_values[i], markersize=3)
+plt.xlabel('Epoch')
+#plt.legend(loc='lower right')
+
+plt.subplot(2, 2, 4)
+plt.title('Accuracy (validation)')
+for i in range(0, len(solvers)):
+    plt.plot(solvers[i].val_acc_history, '-o', label='%f rv' % regularization_values[i], markersize=3)
+plt.xlabel('Epoch')
+plt.legend(loc='lower right')
+
 plt.gcf().set_size_inches(15, 12)
 plt.show()
 
