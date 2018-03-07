@@ -284,8 +284,8 @@ class Solver(object):
 
         # Construct the confusion matrix
         confusion_matrix = construct_confusion_matrix(y,y_pred)
-        #print("Confusion matrix:")
-        #print(confusion_matrix)
+        print("Confusion matrix:")
+        print(confusion_matrix)
 
         # Calculate the prediction measures
         measures = prediction_measures(confusion_matrix)
@@ -330,7 +330,6 @@ class Solver(object):
                     print(self.optim_configs[k]['momentum'])
 
                 '''
-
                 for k in self.optim_configs:
                     self.optim_configs[k]['learning_rate'] *= self.lr_decay
                 '''
@@ -378,14 +377,14 @@ class Solver(object):
                 print(self.best_val_acc)
 
                 #print(classification)
-                '''
+
                 print("Recall rate:")
                 print(recall)
                 print("Precision rate")
                 print(self.final_precision)
                 print("F1 measure:")
                 print(self.final_F1)
-                '''
+
 
         # At the end of training swap the best params into the model
         self.model.params = self.best_params
