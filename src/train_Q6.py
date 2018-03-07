@@ -17,23 +17,26 @@ K.set_image_data_format('channels_first')
 
 batch_size = 32
 num_classes = 7
-epochs = 20
+epochs = 15
 data_augmentation = False
 num_predictions = 20
 save_dir = os.path.join(os.getcwd(), 'saved_models')
 model_name = 'keras_cifar10_trained_model.h5'
 
 num_training = 25709
-num_validation = 0
-num_test = 3000
+num_validation = 3000
+num_test = 0
 
 print("LOAD DATA")
 data = get_FER2013_data(num_training, num_validation, num_test)
 
 x_train = data['X_train']
 y_train = data['y_train']
-x_test = data['X_test']
-y_test = data['y_test']
+
+# This is effectively our validation set
+# In the model this is called X_test and y_test though
+x_test = data['X_val']
+y_test = data['y_val']
 
 # The data, split between train and test sets:
 #(x_train, y_train), (x_test, y_test) = get_FER2013_data(num_training, num_validation, num_test)
@@ -44,7 +47,6 @@ print(x_test.shape[0], 'test samples')
 # Convert class vectors to binary class matrices.
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
-
 
 model = Sequential()
 model.add(Conv2D(32, (3, 3), padding='same',
@@ -129,5 +131,6 @@ print('Saved trained model at %s ' % model_path)
 
 # Score trained model.
 scores = model.evaluate(x_test, y_test, verbose=1)
+
 print('Test loss:', scores[0])
 print('Test accuracy:', scores[1])
