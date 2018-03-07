@@ -9,7 +9,7 @@ import pickle
 ### LOAD DATA
 #######################################################################
 
-num_training = 20000
+num_training = 25709
 num_validation = 3000
 #num_training = 25709
 #num_validation = 3000
@@ -47,7 +47,7 @@ learning_rates = [1e-3] #Use this one, turned out to be th best
 #regularization_values = [0.075, 0.1, 0.125, 0.15, 0.2, 0.25]
 #dropout_values = [0.4]
 dr = 0.4
-neurons = [100,200,250,300,400,800]
+neurons = [700]
 
 #Loop through learning rates specified above
 
@@ -71,7 +71,7 @@ for lr in learning_rates:
         print('****************************')
         print('NO OF NEURONS: %d' % number_neurons)
 
-        no_neurons_layer1 = number_neurons
+        no_neurons_layer1 = number_neurons + 100
         no_neurons_layer2 = number_neurons
         #no_neurons_layer3 = number_neurons
 
@@ -90,7 +90,7 @@ for lr in learning_rates:
             'optim_config':optim_config,
             'lr_decay':0.95,
             'batch_size':100,
-            'num_epochs':30,
+            'num_epochs':1,
             'verbose': False
         }
 
@@ -159,7 +159,7 @@ print('Best method: %s' % best_method)
 #######################################################################
 ### PLOT GRAPH FOR NEURONS
 #######################################################################
-
+'''
 plt.subplot(2, 1, 1)
 plt.title("Training loss")
 plt.gca().set_ylim([1,5])
@@ -178,7 +178,7 @@ plt.xlabel('Epoch')
 
 plt.subplot(2, 2, 4)
 plt.title('Accuracy (validation)')
-plt.gca().set_ylim([0.1,0.45])
+plt.gca().set_ylim([0.1,0.5])
 for i in range(0, len(solvers)):
     plt.plot(solvers[i].val_acc_history, '-o', label='%d NL1, %d NL2' % (neurons[i], neurons[i]), markersize=3)
 plt.xlabel('Epoch')
@@ -186,7 +186,7 @@ plt.legend(loc='lower right')
 
 plt.gcf().set_size_inches(15, 12)
 plt.show()
-
+'''
 #######################################################################
 ### PLOT GRAPH FOR USING DROPOUT
 #######################################################################
@@ -296,7 +296,7 @@ plt.legend(loc='upper right')
 #######################################################################
 ### PLOT GRAPH FINAL MODEL
 #######################################################################
-'''
+
 plt.subplot(2, 1, 1)
 plt.title("Training loss")
 plt.plot(best_solver.loss_history, "o", markersize=0.5)
@@ -304,14 +304,14 @@ plt.xlabel('Iteration')
 
 plt.subplot(2, 1, 2)
 plt.title('Accuracy')
-plt.plot(best_solver.train_acc_history, '-o', label='train', markersize=3)
-plt.plot(best_solver.val_acc_history, '-o', label='val', markersize=3)
+plt.plot(best_solver.train_acc_history, '-o', label='Training', markersize=3)
+plt.plot(best_solver.val_acc_history, '-o', label='Validation', markersize=3)
 plt.plot([0.5] * len(best_solver.val_acc_history), 'k--')
 plt.xlabel('Epoch')
 plt.legend(loc='lower right')
 plt.gcf().set_size_inches(15, 12)
 plt.show()
-'''
+
 #######################################################################
 ### SAVE AND LOAD MODEL
 #######################################################################

@@ -322,12 +322,12 @@ class Solver(object):
 
                     for k in self.optim_configs:
                         self.optim_configs[k]['learning_rate'] *= 0.8
-                        #print(self.optim_configs[k]['learning_rate'])
+                    print(self.optim_configs[k]['learning_rate'])
 
                     for k in self.optim_configs:
-                        if((self.optim_configs[k]['momentum'] *1.1) < 1):
-                            self.optim_configs[k]['momentum'] *= 1.1
-                            #print(self.optim_configs[k]['momentum'])
+                        if((self.optim_configs[k]['momentum'] *1.2) < 1):
+                            self.optim_configs[k]['momentum'] *= 1.2
+                    print(self.optim_configs[k]['momentum'])
 
                 '''
 
