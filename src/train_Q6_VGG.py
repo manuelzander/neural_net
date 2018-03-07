@@ -7,7 +7,7 @@ from __future__ import print_function
 import keras
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
+from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, ZeroPadding2D, Convolution2D
 import os
 
 from src.utils.data_utils import get_FER2013_data
@@ -17,26 +17,26 @@ K.set_image_data_format('channels_first')
 
 batch_size = 32
 num_classes = 7
-epochs = 15
-data_augmentation = False
+epochs = 17
+data_augmentation = True
 num_predictions = 20
 save_dir = os.path.join(os.getcwd(), 'saved_models')
-model_name = 'keras_cifar10_trained_model.h5'
+model_name = 'VGG_08_20_29.h5'
 
 num_training = 25709
-num_validation = 3000
-num_test = 0
+num_validation = 0
+num_test = 3589
 
 print("LOAD DATA")
-data = get_FER2013_data(num_training, num_validation, num_test)
+data = get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True)
 
 x_train = data['X_train']
 y_train = data['y_train']
 
 # This is effectively our validation set
 # In the model this is called X_test and y_test though
-x_test = data['X_val']
-y_test = data['y_val']
+x_test = data['X_test']
+y_test = data['y_test']
 
 # The data, split between train and test sets:
 #(x_train, y_train), (x_test, y_test) = get_FER2013_data(num_training, num_validation, num_test)
@@ -49,28 +49,49 @@ y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
 model = Sequential()
-model.add(Conv2D(32, (3, 3), padding='same',
-                 input_shape= (1, 48, 48) ))
+model.add(ZeroPadding2D((1,1),input_shape=(1,48,48)))
+model.add(Conv2D(64, 3, 3, activation='relu'))
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(64, 3, 3, activation='relu'))
+model.add(MaxPooling2D((2,2), strides=(2,2)))
 
-model.add(Activation('relu'))
-model.add(Conv2D(32, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(128, 3, 3, activation='relu'))
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(128, 3, 3, activation='relu'))
+model.add(MaxPooling2D((2,2), strides=(2,2)))
 
-model.add(Conv2D(64, (3, 3), padding='same'))
-model.add(Activation('relu'))
-model.add(Conv2D(64, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(256, 3, 3, activation='relu'))
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(256, 3, 3, activation='relu'))
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(256, 3, 3, activation='relu'))
+model.add(MaxPooling2D((2,2), strides=(2,2)))
+
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(512, 3, 3, activation='relu'))
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(512, 3, 3, activation='relu'))
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(512, 3, 3, activation='relu'))
+model.add(MaxPooling2D((2,2), strides=(2,2)))
+
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(512, 3, 3, activation='relu'))
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(512, 3, 3, activation='relu'))
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(512, 3, 3, activation='relu'))
+model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(Flatten())
-model.add(Dense(512))
-model.add(Activation('relu'))
+model.add(Dense(4096, activation='relu'))
 model.add(Dropout(0.5))
-model.add(Dense(num_classes))
-model.add(Activation('softmax'))
+model.add(Dense(4096, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(7, activation='softmax'))
+
 
 # initiate RMSprop optimizer
 opt = keras.optimizers.rmsprop(lr=0.0001, decay=1e-6)
@@ -131,6 +152,5 @@ print('Saved trained model at %s ' % model_path)
 
 # Score trained model.
 scores = model.evaluate(x_test, y_test, verbose=1)
-
 print('Test loss:', scores[0])
 print('Test accuracy:', scores[1])

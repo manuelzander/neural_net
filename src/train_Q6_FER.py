@@ -7,8 +7,9 @@ from __future__ import print_function
 import keras
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
+from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Convolution2D
 import os
+from keras.optimizers import Adadelta
 
 from src.utils.data_utils import get_FER2013_data
 from keras import backend as K
@@ -17,26 +18,23 @@ K.set_image_data_format('channels_first')
 
 batch_size = 32
 num_classes = 7
-epochs = 15
-data_augmentation = False
+epochs = 50
+data_augmentation = True
 num_predictions = 20
 save_dir = os.path.join(os.getcwd(), 'saved_models')
 model_name = 'keras_cifar10_trained_model.h5'
 
 num_training = 25709
-num_validation = 3000
-num_test = 0
+num_validation = 0
+num_test = 3000
 
 print("LOAD DATA")
 data = get_FER2013_data(num_training, num_validation, num_test)
 
 x_train = data['X_train']
 y_train = data['y_train']
-
-# This is effectively our validation set
-# In the model this is called X_test and y_test though
-x_test = data['X_val']
-y_test = data['y_val']
+x_test = data['X_test']
+y_test = data['y_test']
 
 # The data, split between train and test sets:
 #(x_train, y_train), (x_test, y_test) = get_FER2013_data(num_training, num_validation, num_test)
@@ -48,37 +46,51 @@ print(x_test.shape[0], 'test samples')
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
+
 model = Sequential()
-model.add(Conv2D(32, (3, 3), padding='same',
-                 input_shape= (1, 48, 48) ))
+model.add(Convolution2D(64, 5, 5, border_mode='valid',
+                        input_shape=(1, 48, 48)))
+model.add(keras.layers.advanced_activations.PReLU(init='zero', weights=None))
+model.add(keras.layers.convolutional.ZeroPadding2D(padding=(2, 2), dim_ordering='th'))
+model.add(MaxPooling2D(pool_size=(5, 5),strides=(2, 2)))
 
-model.add(Activation('relu'))
-model.add(Conv2D(32, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+model.add(keras.layers.convolutional.ZeroPadding2D(padding=(1, 1), dim_ordering='th'))
+model.add(Convolution2D(64, 3, 3))
+model.add(keras.layers.advanced_activations.PReLU(init='zero', weights=None))
+model.add(keras.layers.convolutional.ZeroPadding2D(padding=(1, 1), dim_ordering='th'))
+model.add(Convolution2D(64, 3, 3))
+model.add(keras.layers.advanced_activations.PReLU(init='zero', weights=None))
+model.add(keras.layers.convolutional.AveragePooling2D(pool_size=(3, 3),strides=(2, 2)))
 
-model.add(Conv2D(64, (3, 3), padding='same'))
-model.add(Activation('relu'))
-model.add(Conv2D(64, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+model.add(keras.layers.convolutional.ZeroPadding2D(padding=(1, 1), dim_ordering='th'))
+model.add(Convolution2D(128, 3, 3))
+model.add(keras.layers.advanced_activations.PReLU(init='zero', weights=None))
+model.add(keras.layers.convolutional.ZeroPadding2D(padding=(1, 1), dim_ordering='th'))
+model.add(Convolution2D(128, 3, 3))
+model.add(keras.layers.advanced_activations.PReLU(init='zero', weights=None))
 
+model.add(keras.layers.convolutional.ZeroPadding2D(padding=(1, 1), dim_ordering='th'))
+model.add(keras.layers.convolutional.AveragePooling2D(pool_size=(3, 3),strides=(2, 2)))
+    
 model.add(Flatten())
-model.add(Dense(512))
-model.add(Activation('relu'))
-model.add(Dropout(0.5))
-model.add(Dense(num_classes))
+model.add(Dense(1024))
+model.add(keras.layers.advanced_activations.PReLU(init='zero', weights=None))
+model.add(Dropout(0.2))
+model.add(Dense(1024))
+model.add(keras.layers.advanced_activations.PReLU(init='zero', weights=None))
+model.add(Dropout(0.2))
+
+model.add(Dense(7))    
+    
 model.add(Activation('softmax'))
 
-# initiate RMSprop optimizer
-opt = keras.optimizers.rmsprop(lr=0.0001, decay=1e-6)
-
-# Let's train the model using RMSprop
+ada = Adadelta(lr=0.1, rho=0.95, epsilon=1e-08)
 model.compile(loss='categorical_crossentropy',
-              optimizer=opt,
+                  optimizer=ada,
               metrics=['accuracy'])
+model.summary()
+
+
 
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')
@@ -101,9 +113,9 @@ else:
         featurewise_std_normalization=False,  # divide inputs by std of the dataset
         samplewise_std_normalization=False,  # divide each input by its std
         zca_whitening=False,  # apply ZCA whitening
-        rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
-        width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-        height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+        rotation_range=20,  # randomly rotate images in the range (degrees, 0 to 180)
+        width_shift_range=0.2,  # randomly shift images horizontally (fraction of total width)
+        height_shift_range=0.2,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=True,  # randomly flip images
         vertical_flip=False)  # randomly flip images
 
@@ -125,12 +137,11 @@ if not os.path.isdir(save_dir):
 model_path = os.path.join(save_dir, model_name)
 
 
-
+    
 model.save(model_path)
 print('Saved trained model at %s ' % model_path)
 
 # Score trained model.
 scores = model.evaluate(x_test, y_test, verbose=1)
-
 print('Test loss:', scores[0])
 print('Test accuracy:', scores[1])

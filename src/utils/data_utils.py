@@ -118,8 +118,15 @@ def get_FER2013_data(num_training, num_validation, num_test, subtract_mean=True)
 
 def load_FER2013():
 
-    with open('/vol/bitbucket/osk17/FER2013_data.pickle', 'rb') as handle:
-    #with open('FER2013_data.pickle', 'rb') as handle:
+    root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+    data_source = 'datasets/FER2013_data.pickle'
+    data_path = os.path.join(root_path, data_source)
+    
+    print (data_path)
+    print ("Test")
+    
+    #with open('/vol/bitbucket/osk17/FER2013_data.pickle', 'rb') as handle:
+    with open(data_path, 'rb') as handle:
         s = pickle.load(handle)
 
     '''
