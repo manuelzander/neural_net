@@ -157,6 +157,8 @@ class Solver(object):
         # Set up some variables for book-keeping
         self.epoch = 0
         self.best_val_acc = 0
+        self.final_F1 = []
+        self.final_precision = []
         self.best_params = {}
         self.loss_history = []
         self.train_acc_history = []
@@ -312,8 +314,26 @@ class Solver(object):
             epoch_end = (t + 1) % iterations_per_epoch == 0
             if epoch_end:
                 self.epoch += 1
+
+
+                if ((self.epoch % 10) == 0):
+
+                    print(self.epoch)
+
+                    for k in self.optim_configs:
+                        self.optim_configs[k]['learning_rate'] *= 0.8
+                    print(self.optim_configs[k]['learning_rate'])
+
+                    for k in self.optim_configs:
+                        if((self.optim_configs[k]['momentum'] *1.2) < 1):
+                            self.optim_configs[k]['momentum'] *= 1.2
+                    print(self.optim_configs[k]['momentum'])
+
+                '''
+
                 for k in self.optim_configs:
                     self.optim_configs[k]['learning_rate'] *= self.lr_decay
+                '''
 
             # Check train and val accuracy on the first iteration, the last
             # iteration, and at the end of each epoch.
@@ -339,29 +359,34 @@ class Solver(object):
                     for k, v in self.model.params.items():
                         self.best_params[k] = v.copy()
 
-            if(np.isnan(self.loss_history[-1]) or self.loss_history[-1] > 1e6):
-                return
+            #if(np.isnan(self.loss_history[-2]) or self.loss_history[-2] > 1e6):
+                #return
 
             #Stopping criterium
-            if(self.epoch > 3):
-                if(self.val_acc_history[-1] < self.val_acc_history[-2] and self.val_acc_history[-2] < self.val_acc_history[-3] and self.val_acc_history[-3] < self.val_acc_history[-4]):
+            if(self.epoch > 4):
+                if(self.val_acc_history[-1] < self.val_acc_history[-2] and
+                self.val_acc_history[-2] < self.val_acc_history[-3] and
+                self.val_acc_history[-3] < self.val_acc_history[-4] and
+                self.val_acc_history[-4] < self.val_acc_history[-5]):
                     return
 
             if last_it:
-                classification, recall, precision, f1  = self.calculate_measures(self.X_val, self.y_val,
+                classification, recall, self.final_precision, self.final_F1  = self.calculate_measures(self.X_val, self.y_val,
                     num_samples=self.num_val_samples)
 
                 print("Classification rate:")
                 print(self.best_val_acc)
+
                 #print(classification)
                 '''
                 print("Recall rate:")
                 print(recall)
                 print("Precision rate")
-                print(precision)
+                print(self.final_precision)
                 print("F1 measure:")
-                print(f1)
+                print(self.final_F1)
                 '''
+
         # At the end of training swap the best params into the model
         self.model.params = self.best_params
 
