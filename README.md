@@ -1,16 +1,10 @@
-395 Machine Learning: Assignment 2
-=====================================
+Configurations for test.py:
+- Make sure that the following python modules are installed: keras,
+imageio, numpy and pickle
 
-Please notice that this year, we have an intermediate and an advanced version 
-for the second assignment. Identify if your group consists of: 
+-Q5: for test_fer_model(), specify the path of the secret test set as
+ the first argument, the best model path is provided by the second argument as
+ default and does not need to be specified.
 
-1. Master's Computing students: You **must** complete this advanced assignment 
-(`manuals/assignment2_advanced.md`, pdf format is also available).
-2. Non Master's Computing students 
-(Bachelor's Computing/non-Computing/external/exchange): We recommend you 
-complete the the intermediate assignment which is available on the group web 
-site for download. Optionally: You **can** also choose this advanced assignment,
- it is up to you.
-3. Mixed of Master's Computing and non Master's Computing students: You 
- **must** complete the advanced assignment (`manuals/assignment2_advanced.md`, 
- pdf format is also available).
+-Q6: for test_deep_fer_model(), specify the path of the secret test set as
+ the first argument. Please place the file best_model_Q6.h5 that we send you via Imperial College file exchange into the saved_models folder. This path is given as second argument by default. 
