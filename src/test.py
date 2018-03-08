@@ -10,7 +10,7 @@ from src.utils.data_utils import get_FER2013_data
 
 # TO DO: change the path of the model
 
-def test_fer_model(img_folder, model_path="saved_models/best_model.pkl"):
+def test_fer_model(img_folder, model_path="saved_models/best_model_Q5.pkl"):
     
     """
     Given a folder with images, load the images and your best model to predict
@@ -51,7 +51,7 @@ def test_fer_model(img_folder, model_path="saved_models/best_model.pkl"):
         picture_path = os.path.join(img_folder, filename)
         images[i] = imageio.imread(picture_path)[:,:,0].reshape((48,48,1))
         i += 1
-
+        
      # Normalize the data: subtract the mean image
     if subtract_mean:
         mean_image = np.mean(images, axis=0)
@@ -65,7 +65,7 @@ def test_fer_model(img_folder, model_path="saved_models/best_model.pkl"):
 
 # TO DO: change the path of the model
 # Tests the model with the secret dataset
-def test_deep_fer_model(img_folder, model_path="saved_models/VGG_08_19_10.h5"):
+def test_deep_fer_model(img_folder, model_path="saved_models/best_model_Q6.h5"):
 
     
     """
@@ -126,7 +126,7 @@ def test_deep_fer_model(img_folder, model_path="saved_models/VGG_08_19_10.h5"):
 
 
 # Reports the confusion matrix and prediction measures using the FER2013 dataset
-def test_Q6_FER2013(prediction_pickle_path, model_path="saved_models/VGG_08_19_10.h5"):
+def test_Q6_FER2013(prediction_pickle_path, model_path="saved_models/best_model_Q6.h5"):
 
     root_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     model_path = os.path.join(root_path, model_path)
@@ -168,7 +168,7 @@ def test_Q6_FER2013(prediction_pickle_path, model_path="saved_models/VGG_08_19_1
 
 # Q5 - Tests performance on secret dataset 
 # Return prediction vector
-'''
+
 root_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 data_path = "datasets/Test"
 picture_path = os.path.join(root_path, data_path)
@@ -194,13 +194,13 @@ print ("Classification rate: ")
 print (classification_rate, "\n")
 print ("F1 measure: ")
 print (f1_measure)
-'''
+
 
 # Q6 - Test performance on own testset
 # Tests performance of the network and reports confusion matrix, classification rate and F1 measure per class
-
-confusion_matrix, classification_rate, _, _, f1_measure = test_Q6_FER2013("datasets/FER2013_data.pickle")
 '''
+confusion_matrix, classification_rate, _, _, f1_measure = test_Q6_FER2013("datasets/FER2013_data.pickle")
+
 print ("Confusion matrix: ")
 print (confusion_matrix, "\n")
 print ("Classification rate: ")
@@ -211,15 +211,15 @@ print (f1_measure)
 
 # Q6 - Test performance on secret dataset
 # Returns prediction vector
-
+'''
 root_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-model_path = "datasets/Test"
-model_path = os.path.join(root_path, model_path)
+data_path = "datasets/Test"
+data_path = os.path.join(root_path, data_path)
 
 data_short_path = "datasets/FER2013_data.pickle"
 data_test = os.path.join(root_path, data_short_path)
 
-preds = test_deep_fer_model(model_path)
+preds = test_deep_fer_model(data_path)
 
 with open(data_test, 'rb') as handle:
     data = pickle.load(handle)
@@ -235,5 +235,4 @@ print ("Classification rate: ")
 print (classification_rate, "\n")
 print ("F1 measure: ")
 print (f1_measure)
-
-
+'''
