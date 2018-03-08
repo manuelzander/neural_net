@@ -49,8 +49,6 @@ learning_rates = [1e-3] #Use this one, turned out to be th best
 dr = 0.4
 neurons = [700]
 
-#Loop through learning rates specified above
-
 '''
 for rv in regularization_values:
     print('*************************************************************')
@@ -326,7 +324,4 @@ with open('best_solver.pkl', 'wb') as handle2:
 '''
 with open('model.pkl', 'rb') as handle:
     loaded_model = pickle.load(handle)
-
-#print("W1 after loading")
-#print(loaded_model.params['W1'])
 '''

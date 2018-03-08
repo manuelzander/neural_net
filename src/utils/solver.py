@@ -318,16 +318,16 @@ class Solver(object):
                 #Implement lr and momentum update schedule
                 if ((self.epoch % 10) == 0):
 
-                    print(self.epoch)
+                    #print(self.epoch)
 
                     for k in self.optim_configs:
                         self.optim_configs[k]['learning_rate'] *= 0.8
-                    print(self.optim_configs[k]['learning_rate'])
+                    #print(self.optim_configs[k]['learning_rate'])
 
                     for k in self.optim_configs:
                         if((self.optim_configs[k]['momentum'] *1.2) < 1):
                             self.optim_configs[k]['momentum'] *= 1.2
-                    print(self.optim_configs[k]['momentum'])
+                    #print(self.optim_configs[k]['momentum'])
 
                 '''
                 for k in self.optim_configs:
@@ -375,9 +375,6 @@ class Solver(object):
 
                 print("Classification rate:")
                 print(self.best_val_acc)
-
-                #print(classification)
-
                 print("Recall rate:")
                 print(recall)
                 print("Precision rate")
@@ -385,10 +382,8 @@ class Solver(object):
                 print("F1 measure:")
                 print(self.final_F1)
 
-
         # At the end of training swap the best params into the model
         self.model.params = self.best_params
-
 
 def construct_confusion_matrix(actual_vector, prediction_vector):
 
@@ -414,8 +409,6 @@ def prediction_measures(confusion_matrix):
 
         if s != 0:
             precision_vector[i] =  confusion_matrix[i,i] / sum(confusion_matrix[:,i])
-        #else:
-            #print ("Problem: ", confusion_matrix[:,i])
 
     #F1 Measure
     alpha = 1

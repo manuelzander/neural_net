@@ -6,14 +6,14 @@ from src.utils.solver import Solver
 from src.utils.data_utils import get_CIFAR10_data
 
 """
-TODO: Use a Solver instance to train a TwoLayerNet that achieves at least 50% 
+TODO: Use a Solver instance to train a TwoLayerNet that achieves at least 50%
 accuracy on the validation set.
 """
 #############################################################################
 #                           BEGIN OF YOUR CODE                              #
 #############################################################################
 
-#Get data 
+#Get data
 data = get_CIFAR10_data()
 
 # Create FC Net
@@ -35,6 +35,7 @@ solver = Solver(two_layer_net, data, **args)
 solver.train()
 
 # Plot training and validation results
+'''
 plt.subplot(2,1,1)
 plt.title("Training loss")
 plt.plot(solver.loss_history, "o")
@@ -48,7 +49,7 @@ plt.xlabel('Epoch')
 plt.legend(loc='lower right')
 plt.gcf().set_size_inches(15, 12)
 plt.show()
-
+'''
 ##############################################################################
 #                             END OF YOUR CODE                               #
 ##############################################################################

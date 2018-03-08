@@ -76,26 +76,13 @@ class FullyConnectedNet(object):
 
         #For the first layer
         self.params['W%d' % 1], self.params['b%d' % 1] = random_init(input_dim, hidden_dims[0], weight_scale, dtype)
-        #print("W")
-        #print(self.params['W%d' % 1].shape)
-        #print("b")
-        #print(self.params['b%d' % 1].shape)
 
         #For the hidden layers
         for i in range(1, n_hidden_layer):
-            #print(i)
             self.params['W%d' % (i+1)], self.params['b%d' % (i+1)] = random_init(hidden_dims[i-1], hidden_dims[i], weight_scale, dtype)
-            #print("W")
-            #print(self.params['W%d' % (i+1)].shape)
-            #print("b")
-            #print(self.params['b%d' % (i+1)].shape)
 
         #For the last layer
         self.params['W%d' % self.num_layers], self.params['b%d' % self.num_layers] = random_init(hidden_dims[-1], num_classes, weight_scale, dtype)
-        #print("W")
-        #print(self.params['W%d' % self.num_layers].shape)
-        #print("b")
-        #print(self.params['b%d' % self.num_layers].shape)
 
         #######################################################################
         #                            END OF YOUR CODE                         #
@@ -147,14 +134,8 @@ class FullyConnectedNet(object):
         n_hidden_layer = self.num_layers - 1
 
         scores = X
-        #print("Shape of X before loop")
-        #print(scores.shape)
 
         for i in range(n_hidden_layer):
-            #print(i)
-
-            #print('Shape of X before linear_forward %d' % (i +1))
-            #print(scores.shape)
 
             #LINEAR LAYER
             linear_cache['X%d' % (i + 1)] = scores
@@ -164,15 +145,9 @@ class FullyConnectedNet(object):
                                          self.params['W%d' % (i + 1)],
                                          self.params['b%d' % (i + 1)])
 
-            #print('Shape of X after linear_forward %d' % (i +1))
-            #print(scores.shape)
-
             #RELU LAYER
             relu_cache['X%d' % (i + 1)] = scores
             scores = relu_forward(scores)
-
-            #print('Shape of X after relu_forward %d' % (i +1))
-            #print(scores.shape)
 
             #DROPOUT LAYER
             if self.use_dropout and y is not None:
@@ -183,10 +158,6 @@ class FullyConnectedNet(object):
         #increase i counter by one for last layer
         i+= 1
 
-        #print ("Last layer")
-        #print(i)
-        #print(scores.shape)
-
         #LAST LINEAR LAYER
         linear_cache['X%d' % (i + 1)] = scores
         linear_cache['W%d' % (i + 1)] = self.params['W%d' % (i + 1)]
@@ -194,8 +165,6 @@ class FullyConnectedNet(object):
         scores = linear_forward(scores,
                                  self.params['W%d' % (i + 1)],
                                  self.params['b%d' % (i + 1)])
-
-        #print(scores.shape)
 
         #######################################################################
         #                            END OF YOUR CODE                         #

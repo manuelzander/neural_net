@@ -121,19 +121,10 @@ def load_FER2013():
     root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
     data_source = 'datasets/FER2013_data.pickle'
     data_path = os.path.join(root_path, data_source)
-    
-    print (data_path)
-    print ("Test")
-    
-    #with open('/vol/bitbucket/osk17/FER2013_data.pickle', 'rb') as handle:
-    with open(data_path, 'rb') as handle:
-        s = pickle.load(handle)
 
-    '''
-    f2 = open('FER2013_data.pickle', 'rb')
-    s = pickle.load(f2)
-    f2.close()
-    '''
+    with open('/vol/bitbucket/osk17/FER2013_data.pickle', 'rb') as handle:
+    #with open(data_path, 'rb') as handle:
+        s = pickle.load(handle)
 
     X_train = s['X_train']
     y_train = s['y_train']
@@ -187,11 +178,6 @@ def collect_FER2013_data(filepath):
             X_train[train_count] = imageio.imread(path)[:,:,0].reshape((48,48,1))
             train_count += 1
 
-            #i += 1
-            #if(i == 10):
-            #    break;
-
-
         elif 'Test' in line:
 
             y = line[-2]
@@ -209,10 +195,6 @@ def collect_FER2013_data(filepath):
             X_test[test_count] = imageio.imread(path)[:,:,0].reshape((48,48,1))
             test_count += 1
 
-            #print ("WHY")
-            #print (X_test.shape)
-            #print (len(y_test))
-
     y_train = np.array(y_train).astype("int64")
     y_test = np.array(y_test).astype("int64")
 
@@ -227,22 +209,3 @@ def collect_FER2013_data(filepath):
     f.close()
 
     return
-#############################################################################
-
-#collect_FER2013_data('/vol/bitbucket/395ML_NN_Data/datasets/FER2013/labels_public.txt')
-#a,b,c,d = load_FER2013()
-
-#x = get_FER2013_data(num_training=4, num_validation=2, num_test=0,
-#                     subtract_mean=True)
-
-#print (a.dtype)
-#print (b.dtype)
-#print (c.dtype)
-#print (d.dtype)
-
-#print (x['X_train'][0][0])
-#print (x['X_test'].shape)
-#print (x['X_val'].shape)
-#print (x['y_val'].shape)
-#print (x['y_train'].shape)
-#print (x['y_test'].shape)
