@@ -315,7 +315,7 @@ class Solver(object):
             if epoch_end:
                 self.epoch += 1
 
-
+                #Implement lr and momentum update schedule
                 if ((self.epoch % 10) == 0):
 
                     print(self.epoch)
