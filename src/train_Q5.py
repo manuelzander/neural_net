@@ -90,7 +90,7 @@ for lr in learning_rates:
             'optim_config':optim_config,
             'lr_decay':0.95,
             'batch_size':100,
-            'num_epochs':1,
+            'num_epochs':35,
             'verbose': False
         }
 
@@ -162,25 +162,25 @@ print('Best method: %s' % best_method)
 '''
 plt.subplot(2, 1, 1)
 plt.title("Training loss")
-plt.gca().set_ylim([1,5])
+plt.gca().set_ylim([1,3.5])
 for i in range(0, len(solvers)):
-    plt.plot(solvers[i].loss_history, "o", label='%d NL1, %d NL2' % (neurons[i], neurons[i]), markersize=0.5)
+    plt.plot(solvers[i].loss_history, "o", label='%d NL1, %d NL2' % (neurons[i]+100, neurons[i]), markersize=0.5)
 plt.xlabel('Iteration')
 #plt.legend(loc='upper right')
 
 plt.subplot(2, 2, 3)
 plt.title('Accuracy (training)')
-plt.gca().set_ylim([0.1,0.85])
+plt.gca().set_ylim([0.1,0.80])
 for i in range(0, len(solvers)):
-    plt.plot(solvers[i].train_acc_history, '-o', label='%d NL1, %d NL2' % (neurons[i], neurons[i]), markersize=3)
+    plt.plot(solvers[i].train_acc_history, '-o', label='%d NL1, %d NL2' % (neurons[i]+100, neurons[i]), markersize=3)
 plt.xlabel('Epoch')
 #plt.legend(loc='lower right')
 
 plt.subplot(2, 2, 4)
 plt.title('Accuracy (validation)')
-plt.gca().set_ylim([0.1,0.5])
+plt.gca().set_ylim([0.1,0.45])
 for i in range(0, len(solvers)):
-    plt.plot(solvers[i].val_acc_history, '-o', label='%d NL1, %d NL2' % (neurons[i], neurons[i]), markersize=3)
+    plt.plot(solvers[i].val_acc_history, '-o', label='%d NL1, %d NL2' % (neurons[i]+100, neurons[i]), markersize=3)
 plt.xlabel('Epoch')
 plt.legend(loc='lower right')
 
@@ -299,14 +299,15 @@ plt.legend(loc='upper right')
 
 plt.subplot(2, 1, 1)
 plt.title("Training loss")
+plt.gca().set_ylim([0,4])
 plt.plot(best_solver.loss_history, "o", markersize=0.5)
 plt.xlabel('Iteration')
 
 plt.subplot(2, 1, 2)
 plt.title('Accuracy')
+plt.gca().set_ylim([0.2,0.9])
 plt.plot(best_solver.train_acc_history, '-o', label='Training', markersize=3)
 plt.plot(best_solver.val_acc_history, '-o', label='Validation', markersize=3)
-plt.plot([0.5] * len(best_solver.val_acc_history), 'k--')
 plt.xlabel('Epoch')
 plt.legend(loc='lower right')
 plt.gcf().set_size_inches(15, 12)
